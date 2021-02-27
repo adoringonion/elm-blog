@@ -13,6 +13,8 @@ import Pages.Directory as Directory exposing (Directory)
 import Pages.ImagePath as ImagePath
 import Pages.PagePath as PagePath exposing (PagePath)
 import Palette
+import Element
+import Element
 
 
 view :
@@ -66,34 +68,10 @@ header currentPath =
                 }
             , Element.row [ Element.spacing 15 ]
                 [ githubRepoLink
-                , highlightableLink currentPath Pages.pages.blog.directory "About"
+                , Element.link [] { url = "about", label = Element.text "About"}
                 ]
             ]
         ]
-
-
-highlightableLink :
-    PagePath Pages.PathKey
-    -> Directory Pages.PathKey Directory.WithIndex
-    -> String
-    -> Element msg
-highlightableLink currentPath linkDirectory displayName =
-    let
-        isHighlighted =
-            currentPath |> Directory.includes linkDirectory
-    in
-    Element.link
-        (if isHighlighted then
-            [ Font.underline
-            , Font.color Palette.color.primary
-            ]
-
-         else
-            []
-        )
-        { url = linkDirectory |> Directory.indexPath |> PagePath.toString
-        , label = Element.text displayName
-        }
 
 
 githubRepoLink : Element msg

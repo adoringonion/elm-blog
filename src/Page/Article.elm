@@ -1,6 +1,5 @@
 module Page.Article exposing (view)
 
-import Data.Author as Author
 import Date exposing (Date)
 import Element exposing (Element)
 import Element.Font as Font
@@ -14,19 +13,8 @@ view : ArticleMetadata -> Element msg -> { title : String, body : List (Element 
 view metadata viewForPage =
     { title = metadata.title
     , body =
-        [ Element.column [ Element.spacing 10 ]
-            [ Element.row [ Element.spacing 10 ]
-                [ Author.view [] metadata.author
-                , Element.column [ Element.spacing 10, Element.width Element.fill ]
-                    [ Element.paragraph [ Font.bold, Font.size 24 ]
-                        [ Element.text metadata.author.name
-                        ]
-                    , Element.paragraph [ Font.size 16 ]
-                        [ Element.text metadata.author.bio ]
-                    ]
-                ]
-            ]
-        , publishedDateView metadata |> Element.el [ Font.size 16, Font.color (Element.rgba255 0 0 0 0.6) ]
+        [ 
+         publishedDateView metadata |> Element.el [ Font.size 16, Font.color (Element.rgba255 0 0 0 0.6) ]
         , Palette.blogHeading metadata.title
         , articleImageView metadata.image
         , viewForPage

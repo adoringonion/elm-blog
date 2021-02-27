@@ -1,11 +1,9 @@
 module Main exposing (main)
 
 import Color
-import Data.Author as Author
 import Date
 import Element exposing (Element)
 import Element.Font as Font
-import Feed
 import Head
 import Head.Seo as Seo
 import Html exposing (Html)
@@ -15,7 +13,6 @@ import Layout
 import Markdown.Parser
 import Markdown.Renderer
 import Metadata exposing (Metadata)
-import MySitemap
 import Page.Article
 import Pages exposing (images, pages)
 import Pages.Manifest as Manifest
@@ -86,8 +83,7 @@ generateFiles :
             )
 generateFiles siteMetadata =
     StaticHttp.succeed
-        [ Feed.fileToGenerate { siteTagline = siteTagline, siteUrl = canonicalSiteUrl } siteMetadata |> Ok
-        , MySitemap.build { siteUrl = canonicalSiteUrl } siteMetadata |> Ok
+        [ 
         ]
 
 
@@ -177,14 +173,6 @@ pageView model siteMetadata page viewForPage =
         Metadata.Article metadata ->
             Page.Article.view metadata viewForPage
 
-        Metadata.Author author ->
-            { title = author.name
-            , body =
-                [ Palette.blogHeading author.name
-                , Author.view [] author
-                , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
-                ]
-            }
 
         Metadata.BlogIndex ->
             { title = "Test"
@@ -253,40 +241,7 @@ head metadata =
                             , expirationTime = Nothing
                             }
 
-                Metadata.Author meta ->
-                    let
-                        ( firstName, lastName ) =
-                            case meta.name |> String.split " " of
-                                [ first, last ] ->
-                                    ( first, last )
-
-                                [ first, middle, last ] ->
-                                    ( first ++ " " ++ middle, last )
-
-                                [] ->
-                                    ( "", "" )
-
-                                _ ->
-                                    ( meta.name, "" )
-                    in
-                    Seo.summary
-                        { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages-starter"
-                        , image =
-                            { url = meta.avatar
-                            , alt = meta.name ++ "'s elm-pages articles."
-                            , dimensions = Nothing
-                            , mimeType = Nothing
-                            }
-                        , description = meta.bio
-                        , locale = Nothing
-                        , title = meta.name ++ "'s elm-pages articles."
-                        }
-                        |> Seo.profile
-                            { firstName = firstName
-                            , lastName = lastName
-                            , username = Nothing
-                            }
+                
 
                 Metadata.BlogIndex ->
                     Seo.summaryLarge

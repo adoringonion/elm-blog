@@ -1,6 +1,5 @@
 module Index exposing (view)
 
-import Data.Author
 import Date
 import Element exposing (Element)
 import Element.Border
@@ -12,6 +11,7 @@ import Pages.PagePath as PagePath exposing (PagePath)
 
 type alias PostEntry =
     ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
+
 
 
 view :
@@ -26,8 +26,6 @@ view posts =
                         Metadata.Page meta ->
                             Nothing
 
-                        Metadata.Author _ ->
-                            Nothing
 
                         Metadata.Article meta ->
                             if meta.draft then
@@ -112,9 +110,8 @@ postPreview post =
         ]
         [ title post.title
         , Element.row [ Element.spacing 10, Element.centerX ]
-            [ Data.Author.view [ Element.width (Element.px 40) ] post.author
-            , Element.text post.author.name
-            , Element.text "•"
+            [ 
+             Element.text "•"
             , Element.text (post.published |> Date.format "MMMM ddd, yyyy")
             ]
         , post.description
