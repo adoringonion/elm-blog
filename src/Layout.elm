@@ -16,6 +16,7 @@ import Palette
 import Element
 import Element
 import Element
+import Element
 
 
 view :
@@ -29,7 +30,7 @@ view document page =
     { title = document.title
     , body =
         Element.column
-            [ Element.width Element.fill ]
+            [ Element.width (Element.fill |> Element.minimum 350) ]
             [ header page.path
             , Element.column
                 [ Element.padding 30
