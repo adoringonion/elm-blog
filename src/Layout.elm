@@ -15,6 +15,7 @@ import Pages.PagePath as PagePath exposing (PagePath)
 import Palette
 import Element
 import Element
+import Element
 
 
 view :
@@ -52,7 +53,7 @@ header : PagePath Pages.PathKey -> Element msg
 header currentPath =
     Element.column [ Element.width Element.fill ]
         [ Element.row
-            [ Element.paddingXY 25 4
+            [ Element.paddingXY 25 15
             , Element.spaceEvenly
             , Element.width Element.fill
             , Element.Region.navigation

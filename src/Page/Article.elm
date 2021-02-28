@@ -26,7 +26,7 @@ publishedDateView : { a | published : Date } -> Element msg
 publishedDateView metadata =
     Element.text
         (metadata.published
-            |> Date.format "MMMM ddd, yyyy"
+            |> Date.format "yyyy-MM-dd"
         )
 
 

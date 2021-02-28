@@ -4,14 +4,15 @@ import Date
 import Element exposing (Element)
 import Element.Border
 import Element.Font
+import Element.Region exposing (description)
 import Metadata exposing (Metadata)
 import Pages
+import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
 
 
 type alias PostEntry =
     ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
-
 
 
 view :
@@ -25,7 +26,6 @@ view posts =
                     case metadata of
                         Metadata.Page meta ->
                             Nothing
-
 
                         Metadata.Article meta ->
                             if meta.draft then
@@ -110,10 +110,9 @@ postPreview post =
         ]
         [ title post.title
         , Element.row [ Element.spacing 10, Element.centerX ]
-            [ 
-             Element.text "•"
-            , Element.text (post.published |> Date.format "MMMM ddd, yyyy")
+            [ Element.text (post.published |> Date.format "yyyy-MM-dd")
             ]
+        , articleImageView post.image
         , post.description
             |> Element.text
             |> List.singleton
@@ -124,3 +123,11 @@ postPreview post =
                 ]
         , readMoreLink
         ]
+
+
+articleImageView : ImagePath Pages.PathKey -> Element msg
+articleImageView articleImage =
+    Element.image [ Element.width Element.fill, Element.height (Element.fill |> Element.maximum 200), Element.clip ]
+        { src = Pages.ImagePath.toString articleImage
+        , description = "Article cover photo"
+        }
