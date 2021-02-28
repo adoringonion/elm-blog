@@ -33,4 +33,5 @@ jobs:
           # Name of AWS Bucket
           bucket: ${{ secrets.S3_BUCKET }}
           # The destination bucket region
+          dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
