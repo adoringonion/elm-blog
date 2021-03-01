@@ -63,11 +63,10 @@ title : String -> Element msg
 title text =
     [ Element.text text ]
         |> Element.paragraph
-            [ Element.Font.size 36
+            [ Element.Font.size 23
             , Element.Font.center
             , Element.Font.family [ Element.Font.typeface "Raleway" ]
             , Element.Font.semiBold
-            , Element.padding 16
             ]
 
 
@@ -75,29 +74,14 @@ articleIndex : Metadata.ArticleMetadata -> Element msg
 articleIndex metadata =
     Element.el
         [ Element.centerX
-        , Element.width (Element.maximum 800 Element.fill)
-        , Element.padding 40
+        , Element.width (Element.maximum 300 Element.fill)
+        , Element.padding 20
         , Element.spacing 10
         , Element.Border.width 1
         , Element.Border.color (Element.rgba255 0 0 0 0.1)
-        , Element.mouseOver
-            [ Element.Border.color (Element.rgba255 0 0 0 1)
-            ]
+        , Element.Border.rounded 10
         ]
         (postPreview metadata)
-
-
-readMoreLink : Element msg
-readMoreLink =
-    Element.text "続きを読む"
-        |> Element.el
-            [ Element.centerX
-            , Element.Font.size 18
-            , Element.alpha 0.6
-            , Element.mouseOver [ Element.alpha 1 ]
-            , Element.Font.underline
-            , Element.Font.center
-            ]
 
 
 postPreview : Metadata.ArticleMetadata -> Element msg
@@ -105,8 +89,8 @@ postPreview post =
     Element.textColumn
         [ Element.centerX
         , Element.width Element.fill
-        , Element.spacing 30
-        , Element.Font.size 18
+        , Element.spacing 12
+        , Element.Font.size 14
         ]
         [ title post.title
         , Element.row [ Element.spacing 10, Element.centerX ]
@@ -117,17 +101,18 @@ postPreview post =
             |> Element.text
             |> List.singleton
             |> Element.paragraph
-                [ Element.Font.size 22
+                [ Element.Font.size 15
                 , Element.Font.center
                 , Element.Font.family [ Element.Font.typeface "Raleway" ]
                 ]
-        , readMoreLink
         ]
 
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width Element.fill, Element.height (Element.fill |> Element.maximum 200), Element.clip ]
-        { src = Pages.ImagePath.toString articleImage
-        , description = "Article cover photo"
-        }
+    Element.row [ Element.centerX ]
+        [ Element.image [ Element.width Element.fill, Element.height (Element.fill |> Element.maximum 200), Element.clip ]
+            { src = Pages.ImagePath.toString articleImage
+            , description = "Article cover photo"
+            }
+        ]
