@@ -176,7 +176,7 @@ pageView model siteMetadata page viewForPage =
             Page.Article.view metadata viewForPage
 
         Metadata.BlogIndex ->
-            { title = "Test"
+            { title = "Bunlog"
             , body =
                 [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata ]
                 ]

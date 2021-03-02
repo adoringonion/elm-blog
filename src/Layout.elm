@@ -82,7 +82,7 @@ header currentPath =
                 { url = "/"
                 , label =
                     Element.row [ Font.size 30, Element.spacing 16 ]
-                        [ Element.text "ぶんログ"
+                        [ Element.text "Bunlog"
                         ]
                 }
             , Element.row [ Element.spacing 15 ]
