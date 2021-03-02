@@ -1,4 +1,4 @@
 ---
-title: elm-pages-starter - a simple blog starter
+title: Bunlog
 type: blog-index
 ---

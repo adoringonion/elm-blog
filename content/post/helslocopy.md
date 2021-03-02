@@ -2,7 +2,7 @@
 {
   "type": "blog",
   "author": "bunbun",
-  "title": "Hello `elm-pages`! 🚀",
+  "title": "Helsso `elm-pages`! 🚀",
   "description": "Here's an intro for my blog post to get you interested in reading more...",
   "image": "images/article-covers/hello.jpg",
   "published": "2019-09-21",

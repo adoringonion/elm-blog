@@ -83,8 +83,7 @@ generateFiles :
             )
 generateFiles siteMetadata =
     StaticHttp.succeed
-        [ 
-        ]
+        []
 
 
 markdownDocument : { extension : String, metadata : Json.Decode.Decoder Metadata, body : String -> Result error (Element msg) }
@@ -126,7 +125,10 @@ update msg model =
             ( model, Cmd.none )
 
 
+
 --subscriptions : Model -> Sub Msg
+
+
 subscriptions _ _ _ =
     Sub.none
 
@@ -173,9 +175,8 @@ pageView model siteMetadata page viewForPage =
         Metadata.Article metadata ->
             Page.Article.view metadata viewForPage
 
-
         Metadata.BlogIndex ->
-            { title = "Test"
+            { title = "Bunlog"
             , body =
                 [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata ]
                 ]
@@ -240,8 +241,6 @@ head metadata =
                             , modifiedTime = Nothing
                             , expirationTime = Nothing
                             }
-
-                
 
                 Metadata.BlogIndex ->
                     Seo.summaryLarge

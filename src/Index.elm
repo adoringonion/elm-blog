@@ -1,17 +1,19 @@
 module Index exposing (view)
 
 import Date
-import Element exposing (Element)
+import Element exposing (Element, centerX)
 import Element.Border
 import Element.Font
+import Element.Region exposing (description)
 import Metadata exposing (Metadata)
 import Pages
+import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
+import Element
 
 
 type alias PostEntry =
     ( PagePath Pages.PathKey, Metadata.ArticleMetadata )
-
 
 
 view :
@@ -25,7 +27,6 @@ view posts =
                     case metadata of
                         Metadata.Page meta ->
                             Nothing
-
 
                         Metadata.Article meta ->
                             if meta.draft then
@@ -63,11 +64,9 @@ title : String -> Element msg
 title text =
     [ Element.text text ]
         |> Element.paragraph
-            [ Element.Font.size 36
-            , Element.Font.center
+            [ Element.Font.size 20
             , Element.Font.family [ Element.Font.typeface "Raleway" ]
             , Element.Font.semiBold
-            , Element.padding 16
             ]
 
 
@@ -75,52 +74,44 @@ articleIndex : Metadata.ArticleMetadata -> Element msg
 articleIndex metadata =
     Element.el
         [ Element.centerX
-        , Element.width (Element.maximum 800 Element.fill)
-        , Element.padding 40
+        , Element.width Element.fill
+        , Element.padding 10
         , Element.spacing 10
         , Element.Border.width 1
         , Element.Border.color (Element.rgba255 0 0 0 0.1)
-        , Element.mouseOver
-            [ Element.Border.color (Element.rgba255 0 0 0 1)
-            ]
+        , Element.Border.rounded 10
         ]
         (postPreview metadata)
 
 
-readMoreLink : Element msg
-readMoreLink =
-    Element.text "続きを読む"
-        |> Element.el
-            [ Element.centerX
-            , Element.Font.size 18
-            , Element.alpha 0.6
-            , Element.mouseOver [ Element.alpha 1 ]
-            , Element.Font.underline
-            , Element.Font.center
-            ]
-
-
 postPreview : Metadata.ArticleMetadata -> Element msg
 postPreview post =
-    Element.textColumn
-        [ Element.centerX
-        , Element.width Element.fill
-        , Element.spacing 30
-        , Element.Font.size 18
-        ]
-        [ title post.title
-        , Element.row [ Element.spacing 10, Element.centerX ]
-            [ 
-             Element.text "•"
-            , Element.text (post.published |> Date.format "MMMM ddd, yyyy")
+    Element.row
+        [ Element.width Element.fill ]
+        [ Element.textColumn
+            [ Element.centerX
+            , Element.width (Element.fill |> Element.maximum 300)
+            , Element.padding 10
+            , Element.spacing 12
+            , Element.Font.size 17
             ]
-        , post.description
-            |> Element.text
-            |> List.singleton
-            |> Element.paragraph
-                [ Element.Font.size 22
-                , Element.Font.center
-                , Element.Font.family [ Element.Font.typeface "Raleway" ]
-                ]
-        , readMoreLink
+            [ title post.title
+            , postPublishedDate post.published
+            , post.description |> Element.text |> List.singleton |> Element.paragraph []
+            ]
+        , articleImageView post.image
         ]
+
+
+postPublishedDate : Date.Date -> Element msg
+postPublishedDate published =
+    [ Element.text (published |> Date.format "yyyy-MM-dd") ]
+        |> Element.paragraph [ Element.Font.size 14 ]
+
+
+articleImageView : ImagePath Pages.PathKey -> Element msg
+articleImageView articleImage =
+    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 300), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+        { src = Pages.ImagePath.toString articleImage
+        , description = "Article cover photo"
+        }
