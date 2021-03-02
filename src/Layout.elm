@@ -13,7 +13,6 @@ import Pages.Directory as Directory exposing (Directory)
 import Pages.ImagePath as ImagePath
 import Pages.PagePath as PagePath exposing (PagePath)
 import Palette
-import Element exposing (centerX)
 
 
 view :
@@ -24,10 +23,10 @@ view :
         }
     -> { title : String, body : Html msg }
 view document page =
-    case page.frontmatter of
-        Metadata.BlogIndex ->
-            { title = document.title
-            , body =
+    { title = document.title
+    , body =
+        case page.frontmatter of
+            Metadata.BlogIndex ->
                 Element.column
                     [ Element.width (Element.fill |> Element.minimum 530) ]
                     [ header page.path
@@ -45,10 +44,8 @@ view document page =
                         , Font.family [ Font.typeface "Roboto" ]
                         , Font.color (Element.rgba255 0 0 0 0.8)
                         ]
-            }
-        _ ->
-            { title = document.title
-            , body =
+
+            _ ->
                 Element.column
                     [ Element.width (Element.fill |> Element.minimum 530) ]
                     [ header page.path
@@ -57,7 +54,7 @@ view document page =
                         , Element.spacing 40
                         , Element.Region.mainContent
                         , Element.width (Element.fill |> Element.maximum 800)
-                        , centerX
+                        , Element.centerX
                         ]
                         document.body
                     ]
@@ -67,8 +64,7 @@ view document page =
                         , Font.family [ Font.typeface "Roboto" ]
                         , Font.color (Element.rgba255 0 0 0 0.8)
                         ]
-            }
-            
+    }
 
 
 header : PagePath Pages.PathKey -> Element msg
