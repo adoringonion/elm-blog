@@ -1,7 +1,7 @@
 module Index exposing (view)
 
 import Date
-import Element exposing (Element)
+import Element exposing (Element, centerX)
 import Element.Border
 import Element.Font
 import Element.Region exposing (description)
@@ -9,6 +9,7 @@ import Metadata exposing (Metadata)
 import Pages
 import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
+import Element
 
 
 type alias PostEntry =
@@ -63,8 +64,7 @@ title : String -> Element msg
 title text =
     [ Element.text text ]
         |> Element.paragraph
-            [ Element.Font.size 23
-            , Element.Font.center
+            [ Element.Font.size 20
             , Element.Font.family [ Element.Font.typeface "Raleway" ]
             , Element.Font.semiBold
             ]
@@ -74,8 +74,8 @@ articleIndex : Metadata.ArticleMetadata -> Element msg
 articleIndex metadata =
     Element.el
         [ Element.centerX
-        , Element.width (Element.maximum 300 Element.fill)
-        , Element.padding 20
+        , Element.width Element.fill
+        , Element.padding 10
         , Element.spacing 10
         , Element.Border.width 1
         , Element.Border.color (Element.rgba255 0 0 0 0.1)
@@ -86,33 +86,32 @@ articleIndex metadata =
 
 postPreview : Metadata.ArticleMetadata -> Element msg
 postPreview post =
-    Element.textColumn
-        [ Element.centerX
-        , Element.width Element.fill
-        , Element.spacing 12
-        , Element.Font.size 14
-        ]
-        [ title post.title
-        , Element.row [ Element.spacing 10, Element.centerX ]
-            [ Element.text (post.published |> Date.format "yyyy-MM-dd")
+    Element.row
+        [ Element.width Element.fill ]
+        [ Element.textColumn
+            [ Element.centerX
+            , Element.width (Element.fill |> Element.maximum 300)
+            , Element.padding 10
+            , Element.spacing 12
+            , Element.Font.size 17
+            ]
+            [ title post.title
+            , postPublishedDate post.published
+            , post.description |> Element.text |> List.singleton |> Element.paragraph []
             ]
         , articleImageView post.image
-        , post.description
-            |> Element.text
-            |> List.singleton
-            |> Element.paragraph
-                [ Element.Font.size 15
-                , Element.Font.center
-                , Element.Font.family [ Element.Font.typeface "Raleway" ]
-                ]
         ]
+
+
+postPublishedDate : Date.Date -> Element msg
+postPublishedDate published =
+    [ Element.text (published |> Date.format "yyyy-MM-dd") ]
+        |> Element.paragraph [ Element.Font.size 14 ]
 
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
 articleImageView articleImage =
-    Element.row [ Element.centerX ]
-        [ Element.image [ Element.width Element.fill, Element.height (Element.fill |> Element.maximum 200), Element.clip ]
-            { src = Pages.ImagePath.toString articleImage
-            , description = "Article cover photo"
-            }
-        ]
+    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 300), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+        { src = Pages.ImagePath.toString articleImage
+        , description = "Article cover photo"
+        }

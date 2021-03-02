@@ -13,10 +13,7 @@ import Pages.Directory as Directory exposing (Directory)
 import Pages.ImagePath as ImagePath
 import Pages.PagePath as PagePath exposing (PagePath)
 import Palette
-import Element
-import Element
-import Element
-import Element
+import Element exposing (centerX)
 
 
 view :
@@ -27,27 +24,51 @@ view :
         }
     -> { title : String, body : Html msg }
 view document page =
-    { title = document.title
-    , body =
-        Element.column
-            [ Element.width (Element.fill |> Element.minimum 350) ]
-            [ header page.path
-            , Element.column
-                [ Element.padding 30
-                , Element.spacing 40
-                , Element.Region.mainContent
-                , Element.width (Element.fill |> Element.maximum 800)
-                , Element.centerX
-                ]
-                document.body
-            ]
-            |> Element.layout
-                [ Element.width Element.fill
-                , Font.size 20
-                , Font.family [ Font.typeface "Roboto" ]
-                , Font.color (Element.rgba255 0 0 0 0.8)
-                ]
-    }
+    case page.frontmatter of
+        Metadata.BlogIndex ->
+            { title = document.title
+            , body =
+                Element.column
+                    [ Element.width (Element.fill |> Element.minimum 530) ]
+                    [ header page.path
+                    , Element.column
+                        [ Element.padding 30
+                        , Element.spacing 40
+                        , Element.Region.mainContent
+                        , Element.width (Element.fill |> Element.maximum 800)
+                        ]
+                        document.body
+                    ]
+                    |> Element.layout
+                        [ Element.width Element.fill
+                        , Font.size 20
+                        , Font.family [ Font.typeface "Roboto" ]
+                        , Font.color (Element.rgba255 0 0 0 0.8)
+                        ]
+            }
+        _ ->
+            { title = document.title
+            , body =
+                Element.column
+                    [ Element.width (Element.fill |> Element.minimum 530) ]
+                    [ header page.path
+                    , Element.column
+                        [ Element.padding 30
+                        , Element.spacing 40
+                        , Element.Region.mainContent
+                        , Element.width (Element.fill |> Element.maximum 800)
+                        , centerX
+                        ]
+                        document.body
+                    ]
+                    |> Element.layout
+                        [ Element.width Element.fill
+                        , Font.size 20
+                        , Font.family [ Font.typeface "Roboto" ]
+                        , Font.color (Element.rgba255 0 0 0 0.8)
+                        ]
+            }
+            
 
 
 header : PagePath Pages.PathKey -> Element msg
@@ -70,7 +91,7 @@ header currentPath =
                 }
             , Element.row [ Element.spacing 15 ]
                 [ githubRepoLink
-                , Element.link [] { url = "about", label = Element.text "About"}
+                , Element.link [] { url = "about", label = Element.text "About" }
                 ]
             ]
         ]
