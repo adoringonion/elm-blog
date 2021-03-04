@@ -10,6 +10,7 @@ import Html exposing (Html)
 import Index
 import Json.Decode
 import Layout
+import Markdown.Html exposing (tag)
 import Markdown.Parser
 import Markdown.Renderer
 import Metadata exposing (Metadata)
@@ -175,12 +176,21 @@ pageView model siteMetadata page viewForPage =
         Metadata.Article metadata ->
             Page.Article.view metadata viewForPage
 
-        Metadata.BlogIndex ->
-            { title = "Bunlog"
-            , body =
-                [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata ]
-                ]
-            }
+        Metadata.BlogIndex tagName ->
+            case tagName of
+                Just value ->
+                    { title = value ++ "の記事"
+                    , body =
+                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just value) ]
+                        ]
+                    }
+
+                Nothing ->
+                    { title = "Bunlog"
+                    , body =
+                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata Nothing ]
+                        ]
+                    }
 
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
@@ -242,7 +252,7 @@ head metadata =
                             , expirationTime = Nothing
                             }
 
-                Metadata.BlogIndex ->
+                Metadata.BlogIndex _ ->
                     Seo.summaryLarge
                         { canonicalUrlOverride = Nothing
                         , siteName = "elm-pages"

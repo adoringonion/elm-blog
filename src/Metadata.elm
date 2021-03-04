@@ -5,12 +5,13 @@ import Json.Decode as Decode exposing (Decoder)
 import List.Extra
 import Pages
 import Pages.ImagePath as ImagePath exposing (ImagePath)
+import String exposing (String)
 
 
 type Metadata
     = Page PageMetadata
     | Article ArticleMetadata
-    | BlogIndex
+    | BlogIndex (Maybe String)
 
 
 type alias ArticleMetadata =
@@ -38,7 +39,7 @@ decoder =
                             |> Decode.map (\title -> Page { title = title })
 
                     "blog-index" ->
-                        Decode.succeed BlogIndex
+                        Decode.succeed (BlogIndex Maybe.Nothing)
 
                     "blog" ->
                         Decode.map6 ArticleMetadata

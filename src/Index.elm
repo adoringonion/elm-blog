@@ -9,7 +9,7 @@ import Metadata exposing (Metadata)
 import Pages
 import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
-import Element
+import Svg exposing (metadata)
 
 
 type alias PostEntry =
@@ -18,16 +18,14 @@ type alias PostEntry =
 
 view :
     List ( PagePath Pages.PathKey, Metadata )
+    -> Maybe String
     -> Element msg
-view posts =
+view posts tagName =
     Element.column [ Element.spacing 20 ]
         (posts
             |> List.filterMap
                 (\( path, metadata ) ->
                     case metadata of
-                        Metadata.Page meta ->
-                            Nothing
-
                         Metadata.Article meta ->
                             if meta.draft then
                                 Nothing
@@ -35,12 +33,28 @@ view posts =
                             else
                                 Just ( path, meta )
 
-                        Metadata.BlogIndex ->
+                        _ ->
                             Nothing
                 )
+            |> tagFilter tagName
             |> List.sortWith postPublishDateDescending
             |> List.map postSummary
         )
+
+
+tagFilter : Maybe String -> List PostEntry -> List PostEntry
+tagFilter tagName posts =
+    case tagName of
+        Just value ->
+            List.filter (hasTag value) posts
+
+        Nothing ->
+            posts
+
+
+hasTag : String -> PostEntry -> Bool
+hasTag tagName ( _, metadata ) =
+    List.member tagName metadata.tags
 
 
 postPublishDateDescending : PostEntry -> PostEntry -> Order
