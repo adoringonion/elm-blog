@@ -2,6 +2,7 @@ module Page.Article exposing (view)
 
 import Date exposing (Date)
 import Element exposing (Element)
+import Element.Border
 import Element.Font as Font
 import Metadata exposing (ArticleMetadata)
 import Pages
@@ -13,9 +14,9 @@ view : ArticleMetadata -> Element msg -> { title : String, body : List (Element 
 view metadata viewForPage =
     { title = metadata.title
     , body =
-        [ 
-         publishedDateView metadata |> Element.el [ Font.size 16, Font.color (Element.rgba255 0 0 0 0.6) ]
+        [ publishedDateView metadata |> Element.el [ Font.size 16, Font.color (Element.rgba255 0 0 0 0.6) ]
         , Palette.blogHeading metadata.title
+        , tagsView metadata
         , articleImageView metadata.image
         , viewForPage
         ]
@@ -28,6 +29,20 @@ publishedDateView metadata =
         (metadata.published
             |> Date.format "yyyy-MM-dd"
         )
+
+
+tagsView : { a | tags : List String } -> Element msg
+tagsView metadata =
+    Element.row [ Element.spacing 10 ] (List.map tag metadata.tags)
+
+
+tag : String -> Element msg
+tag tagName =
+    Element.el
+        [ Element.padding 2
+        , Element.Border.width 1
+        ]
+        (Element.text tagName)
 
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
