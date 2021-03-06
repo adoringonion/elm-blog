@@ -4,6 +4,7 @@ import Color
 import Date
 import Element exposing (Element)
 import Element.Font as Font
+import Getto.Url.Query.Decode as Getto
 import Head
 import Head.Seo as Seo
 import Html exposing (Html)
@@ -16,12 +17,15 @@ import Markdown.Renderer
 import Metadata exposing (Metadata)
 import Page.Article
 import Pages exposing (images, pages)
+import Pages.Directory exposing (indexPath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
 import Pages.PagePath exposing (PagePath)
 import Pages.Platform
 import Pages.StaticHttp as StaticHttp
 import Palette
+import Svg exposing (metadata)
+import Svg.Attributes exposing (mode)
 
 
 manifest : Manifest.Config Pages.PathKey
@@ -33,7 +37,7 @@ manifest =
     , description = "elm-pages-starter - A statically typed site generator."
     , iarcRatingId = Nothing
     , name = "elm-pages-starter"
-    , themeColor = Just Color.white
+    , themeColor = Just Color.black
     , startUrl = pages.index
     , shortName = Just "elm-pages-starter"
     , sourceIcon = images.iconPng
@@ -60,7 +64,7 @@ main =
         , documents = [ markdownDocument ]
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
-        , onPageChange = Nothing
+        , onPageChange = Just onPageChange
         , internals = Pages.internals
         }
         |> Pages.Platform.withFileGenerator generateFiles
@@ -107,23 +111,32 @@ markdownDocument =
 
 
 type alias Model =
-    {}
+    Maybe String
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model, Cmd.none )
+    ( Nothing, Cmd.none )
 
 
-type alias Msg =
-    ()
+type Msg
+    = Tag (Maybe String)
+    | NoQuery
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        () ->
-            ( model, Cmd.none )
+        Tag name ->
+            case name of
+                Just value ->
+                    ( Just value, Cmd.none )
+
+                Nothing ->
+                    ( Nothing, Cmd.none )
+
+        NoQuery ->
+            ( Nothing, Cmd.none )
 
 
 
@@ -132,6 +145,30 @@ update msg model =
 
 subscriptions _ _ _ =
     Sub.none
+
+
+onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment : Maybe String, metadata : Metadata } -> Msg
+onPageChange page =
+    case page.metadata of
+        Metadata.BlogIndex ->
+            case page.query of
+                Just value ->
+                    decodeQuery value
+
+                Nothing ->
+                    NoQuery
+
+        _ ->
+            NoQuery
+
+
+decodeQuery : String -> Msg
+decodeQuery query =
+    let
+        value =
+            query |> Getto.split
+    in
+    value |> Getto.entryAt [ "tag" ] Getto.string |> Tag
 
 
 view :
@@ -176,17 +213,17 @@ pageView model siteMetadata page viewForPage =
         Metadata.Article metadata ->
             Page.Article.view metadata viewForPage
 
-        Metadata.BlogIndex tagName ->
-            case tagName of
+        Metadata.BlogIndex ->
+            case model of
                 Just value ->
-                    { title = value ++ "の記事"
+                    { title = value ++ "のタグが付いた記事"
                     , body =
                         [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just value) ]
                         ]
                     }
 
                 Nothing ->
-                    { title = "Bunlog"
+                    { title = "aaaa"
                     , body =
                         [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata Nothing ]
                         ]
@@ -252,7 +289,7 @@ head metadata =
                             , expirationTime = Nothing
                             }
 
-                Metadata.BlogIndex _ ->
+                Metadata.BlogIndex ->
                     Seo.summaryLarge
                         { canonicalUrlOverride = Nothing
                         , siteName = "elm-pages"

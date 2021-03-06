@@ -38,7 +38,7 @@ tagsView metadata =
 
 tag : String -> Element msg
 tag tagName =
-    Element.link [] { url = "/tags/" ++ tagName, label = Element.el [] (Element.text tagName) }
+    Element.link [] { url = "/?tag=" ++ tagName, label = Element.el [] (Element.text tagName) }
 
 
 articleImageView : ImagePath Pages.PathKey -> Element msg

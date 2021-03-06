@@ -11,7 +11,7 @@ import String exposing (String)
 type Metadata
     = Page PageMetadata
     | Article ArticleMetadata
-    | BlogIndex (Maybe String)
+    | BlogIndex
 
 
 type alias ArticleMetadata =
@@ -39,7 +39,7 @@ decoder =
                             |> Decode.map (\title -> Page { title = title })
 
                     "blog-index" ->
-                        Decode.succeed (BlogIndex Maybe.Nothing)
+                        Decode.succeed BlogIndex
 
                     "blog" ->
                         Decode.map6 ArticleMetadata

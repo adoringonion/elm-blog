@@ -26,7 +26,7 @@ view document page =
     { title = document.title
     , body =
         case page.frontmatter of
-            Metadata.BlogIndex _ ->
+            Metadata.BlogIndex ->
                 Element.column
                     [ Element.width (Element.fill |> Element.minimum 530) ]
                     [ header page.path
