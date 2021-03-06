@@ -35,6 +35,7 @@ view document page =
                         , Element.spacing 40
                         , Element.Region.mainContent
                         , Element.width (Element.fill |> Element.maximum 800)
+                        , Element.centerX
                         ]
                         document.body
                     ]

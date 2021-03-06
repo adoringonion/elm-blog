@@ -10,6 +10,7 @@ import Pages
 import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
 import Svg exposing (metadata)
+import Tag
 
 
 type alias PostEntry =
@@ -111,6 +112,7 @@ postPreview post =
             ]
             [ title post.title
             , postPublishedDate post.published
+            , tagsView post
             , post.description |> Element.text |> List.singleton |> Element.paragraph []
             ]
         , articleImageView post.image
@@ -125,7 +127,12 @@ postPublishedDate published =
 
 articleImageView : ImagePath Pages.PathKey -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 300), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
         { src = Pages.ImagePath.toString articleImage
         , description = "Article cover photo"
         }
+
+
+tagsView : { a | tags : List String } -> Element msg
+tagsView metadata =
+    Element.row [ Element.spacing 10 ] (List.map Tag.tag metadata.tags)

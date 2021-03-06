@@ -210,14 +210,14 @@ pageView model siteMetadata page viewForPage =
         Metadata.BlogIndex ->
             case model.tag of
                 Just tag ->
-                    { title = tag ++ "のタグが付いた記事"
+                    { title = addTitle <| Just (tag ++ "のタグが付いた記事")
                     , body =
                         [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just tag) ]
                         ]
                     }
 
                 Nothing ->
-                    { title = "aaaa"
+                    { title = addTitle Nothing
                     , body =
                         [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata Nothing ]
                         ]
@@ -246,7 +246,7 @@ head metadata =
     commonHeadTags
         ++ (case metadata of
                 Metadata.Page meta ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
                         , siteName = "elm-pages-starter"
                         , image =
@@ -262,9 +262,9 @@ head metadata =
                         |> Seo.website
 
                 Metadata.Article meta ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages starter"
+                        , siteName = addTitle Nothing
                         , image =
                             { url = meta.image
                             , alt = meta.description
@@ -273,7 +273,7 @@ head metadata =
                             }
                         , description = meta.description
                         , locale = Nothing
-                        , title = meta.title
+                        , title = addTitle (Just meta.title)
                         }
                         |> Seo.article
                             { tags = []
@@ -286,7 +286,7 @@ head metadata =
                 Metadata.BlogIndex ->
                     Seo.summaryLarge
                         { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages"
+                        , siteName = addTitle Nothing
                         , image =
                             { url = images.iconPng
                             , alt = "elm-pages logo"
@@ -295,7 +295,7 @@ head metadata =
                             }
                         , description = siteTagline
                         , locale = Nothing
-                        , title = "elm-pages blog"
+                        , title = addTitle Nothing
                         }
                         |> Seo.website
            )
@@ -303,9 +303,19 @@ head metadata =
 
 canonicalSiteUrl : String
 canonicalSiteUrl =
-    "https://elm-pages-starter.netlify.com"
+    "https://blog.adoring-onion.dev/"
 
 
 siteTagline : String
 siteTagline =
-    "Starter blog for elm-pages"
+    "ぶんぶんのブログ"
+
+
+addTitle : Maybe String -> String
+addTitle pageTitle =
+    case pageTitle of
+        Just title ->
+            "Bunlog | " ++ title
+
+        Nothing ->
+            "Bunlog"
