@@ -6,7 +6,7 @@
   "description": "I'm not quite ready to share this post with the world",
   "image": "images/article-covers/mountains.jpg",
   "published": "2019-09-21",
-  "tags": ["test", "blog"],
+  "tags": ["ポエム", "blog"],
 }
 ---
 

@@ -49,6 +49,10 @@ type alias Rendered =
     Element Msg
 
 
+type alias Query =
+    { tag : Maybe String }
+
+
 
 -- the intellij-elm plugin doesn't support type aliases for Programs so we need to use this line
 -- main : Platform.Program Pages.Platform.Flags (Pages.Platform.Model Model Msg Metadata Rendered) (Pages.Platform.Msg Msg Metadata Rendered)
@@ -111,32 +115,27 @@ markdownDocument =
 
 
 type alias Model =
-    Maybe String
+    Query
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Nothing, Cmd.none )
+    ( { tag = Nothing }, Cmd.none )
 
 
 type Msg
-    = Tag (Maybe String)
-    | NoQuery
+    = HasQuery Query
+    | NoMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Tag name ->
-            case name of
-                Just value ->
-                    ( Just value, Cmd.none )
+        HasQuery query ->
+            ( query, Cmd.none )
 
-                Nothing ->
-                    ( Nothing, Cmd.none )
-
-        NoQuery ->
-            ( Nothing, Cmd.none )
+        NoMsg ->
+            ( { tag = Nothing }, Cmd.none )
 
 
 
@@ -149,26 +148,21 @@ subscriptions _ _ _ =
 
 onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment : Maybe String, metadata : Metadata } -> Msg
 onPageChange page =
-    case page.metadata of
-        Metadata.BlogIndex ->
-            case page.query of
-                Just value ->
-                    decodeQuery value
+    case page.query of
+        Just query ->
+            decodeQuery query
 
-                Nothing ->
-                    NoQuery
-
-        _ ->
-            NoQuery
+        Nothing ->
+            NoMsg
 
 
 decodeQuery : String -> Msg
 decodeQuery query =
     let
-        value =
-            query |> Getto.split
+        tag =
+            query |> Getto.split |> Getto.entryAt [ "tag" ] Getto.string
     in
-    value |> Getto.entryAt [ "tag" ] Getto.string |> Tag
+    HasQuery { tag = tag }
 
 
 view :
@@ -214,11 +208,11 @@ pageView model siteMetadata page viewForPage =
             Page.Article.view metadata viewForPage
 
         Metadata.BlogIndex ->
-            case model of
-                Just value ->
-                    { title = value ++ "のタグが付いた記事"
+            case model.tag of
+                Just tag ->
+                    { title = tag ++ "のタグが付いた記事"
                     , body =
-                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just value) ]
+                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just tag) ]
                         ]
                     }
 
