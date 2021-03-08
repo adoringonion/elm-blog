@@ -19,6 +19,7 @@
             "elm/time": "1.0.0",
             "elm/url": "1.0.0",
             "elm-community/list-extra": "8.2.4",
+            "elm-explorations/markdown": "1.0.0",
             "getto-systems/elm-url": "1.0.0",
             "justinmimbs/date": "3.2.1",
             "mdgriffith/elm-ui": "1.1.8"
