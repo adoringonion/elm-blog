@@ -7,11 +7,13 @@ import Element.Font as Font
 import Getto.Url.Query.Decode as Getto
 import Head
 import Head.Seo as Seo
-import Html exposing (Html)
+import Html exposing (Html, p)
 import Index
 import Json.Decode
 import Layout
-import Markdown.Html exposing (tag)
+import Markdown
+import Markdown.Config exposing (Options, defaultOptions)
+import Markdown.Html exposing (Renderer, oneOf, tag)
 import Markdown.Parser
 import Markdown.Renderer
 import Metadata exposing (Metadata)
@@ -102,16 +104,23 @@ markdownDocument =
     , body =
         \markdownBody ->
             -- Html.div [] [ Markdown.toHtml [] markdownBody ]
-            Markdown.Parser.parse markdownBody
-                |> Result.withDefault []
-                |> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer
-                |> Result.withDefault [ Html.text "" ]
+            customHtmlRenderer markdownBody
                 |> Html.div []
                 |> Element.html
                 |> List.singleton
                 |> Element.paragraph [ Element.width Element.fill ]
                 |> Ok
     }
+
+
+customHtmlRenderer : String -> List (Html msg)
+customHtmlRenderer body =
+    Markdown.toHtml (Just customOptions) body
+
+
+customOptions : Options
+customOptions =
+    { defaultOptions | rawHtml = Markdown.Config.ParseUnsafe }
 
 
 type alias Model =
