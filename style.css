@@ -3,3 +3,9 @@
 .avatar img {
   border-radius: 50%;
 }
+
+.iframe-center {
+  display: block;
+  margin: auto;
+}
+
