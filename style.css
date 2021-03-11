@@ -9,3 +9,8 @@
   margin: auto;
 }
 
+pre {
+  background-color: #002b36;
+  color: #c5dfe2;
+  padding: 20px;
+}

@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Color
 import Date
-import Element exposing (Element)
+import Element exposing (Attr, Element)
 import Element.Font as Font
 import Getto.Url.Query.Decode as Getto
 import Head
@@ -11,11 +11,7 @@ import Html exposing (Html, p)
 import Index
 import Json.Decode
 import Layout
-import Markdown
-import Markdown.Config exposing (Options, defaultOptions)
-import Markdown.Html exposing (Renderer, oneOf, tag)
-import Markdown.Parser
-import Markdown.Renderer
+import Markdown exposing (Options, toHtmlWith)
 import Metadata exposing (Metadata)
 import Page.Article
 import Pages exposing (images, pages)
@@ -103,24 +99,21 @@ markdownDocument =
     , metadata = Metadata.decoder
     , body =
         \markdownBody ->
-            -- Html.div [] [ Markdown.toHtml [] markdownBody ]
-            customHtmlRenderer markdownBody
-                |> Html.div []
+            Markdown.toHtmlWith myOptions [] markdownBody
                 |> Element.html
                 |> List.singleton
-                |> Element.paragraph [ Element.width Element.fill ]
+                |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
                 |> Ok
     }
 
 
-customHtmlRenderer : String -> List (Html msg)
-customHtmlRenderer body =
-    Markdown.toHtml (Just customOptions) body
-
-
-customOptions : Options
-customOptions =
-    { defaultOptions | rawHtml = Markdown.Config.ParseUnsafe }
+myOptions : Options
+myOptions =
+    { githubFlavored = Just { tables = True, breaks = False }
+    , defaultHighlighting = Nothing
+    , sanitize = False
+    , smartypants = False
+    }
 
 
 type alias Model =
@@ -275,7 +268,7 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
-                            { url = meta.image
+                            { url = images.iconPng
                             , alt = meta.description
                             , dimensions = Nothing
                             , mimeType = Nothing
@@ -293,7 +286,7 @@ head metadata =
                             }
 
                 Metadata.BlogIndex ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
