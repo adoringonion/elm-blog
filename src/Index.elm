@@ -79,7 +79,7 @@ title : String -> Element msg
 title text =
     [ Element.text text ]
         |> Element.paragraph
-            [ Element.Font.size 20
+            [ Element.Font.size 18
             , Element.Font.family [ Element.Font.typeface "Raleway" ]
             , Element.Font.semiBold
             ]
@@ -125,12 +125,17 @@ postPublishedDate published =
         |> Element.paragraph [ Element.Font.size 14 ]
 
 
-articleImageView : ImagePath Pages.PathKey -> Element msg
+articleImageView : Maybe (ImagePath Pages.PathKey) -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
-        { src = Pages.ImagePath.toString articleImage
-        , description = "Article cover photo"
-        }
+    case articleImage of
+        Just image ->
+            Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+                { src = Pages.ImagePath.toString image
+                , description = "Article cover photo"
+                }
+
+        Nothing ->
+            Element.row [ Element.width (Element.fill |> Element.maximum 300) ] []
 
 
 tagsView : { a | tags : List String } -> Element msg
