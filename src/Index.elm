@@ -9,7 +9,8 @@ import Metadata exposing (Metadata)
 import Pages
 import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
-import Element
+import Svg exposing (metadata)
+import Tag
 
 
 type alias PostEntry =
@@ -18,16 +19,14 @@ type alias PostEntry =
 
 view :
     List ( PagePath Pages.PathKey, Metadata )
+    -> Maybe String
     -> Element msg
-view posts =
+view posts tagName =
     Element.column [ Element.spacing 20 ]
         (posts
             |> List.filterMap
                 (\( path, metadata ) ->
                     case metadata of
-                        Metadata.Page meta ->
-                            Nothing
-
                         Metadata.Article meta ->
                             if meta.draft then
                                 Nothing
@@ -35,12 +34,28 @@ view posts =
                             else
                                 Just ( path, meta )
 
-                        Metadata.BlogIndex ->
+                        _ ->
                             Nothing
                 )
+            |> tagFilter tagName
             |> List.sortWith postPublishDateDescending
             |> List.map postSummary
         )
+
+
+tagFilter : Maybe String -> List PostEntry -> List PostEntry
+tagFilter tagName posts =
+    case tagName of
+        Just value ->
+            List.filter (hasTag value) posts
+
+        Nothing ->
+            posts
+
+
+hasTag : String -> PostEntry -> Bool
+hasTag tagName ( _, metadata ) =
+    List.member tagName metadata.tags
 
 
 postPublishDateDescending : PostEntry -> PostEntry -> Order
@@ -64,7 +79,7 @@ title : String -> Element msg
 title text =
     [ Element.text text ]
         |> Element.paragraph
-            [ Element.Font.size 20
+            [ Element.Font.size 18
             , Element.Font.family [ Element.Font.typeface "Raleway" ]
             , Element.Font.semiBold
             ]
@@ -97,6 +112,7 @@ postPreview post =
             ]
             [ title post.title
             , postPublishedDate post.published
+            , tagsView post
             , post.description |> Element.text |> List.singleton |> Element.paragraph []
             ]
         , articleImageView post.image
@@ -109,9 +125,19 @@ postPublishedDate published =
         |> Element.paragraph [ Element.Font.size 14 ]
 
 
-articleImageView : ImagePath Pages.PathKey -> Element msg
+articleImageView : Maybe (ImagePath Pages.PathKey) -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 300), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
-        { src = Pages.ImagePath.toString articleImage
-        , description = "Article cover photo"
-        }
+    case articleImage of
+        Just image ->
+            Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+                { src = Pages.ImagePath.toString image
+                , description = "Article cover photo"
+                }
+
+        Nothing ->
+            Element.row [ Element.width (Element.fill |> Element.maximum 300) ] []
+
+
+tagsView : { a | tags : List String } -> Element msg
+tagsView metadata =
+    Element.row [ Element.spacing 10 ] (List.map Tag.tag metadata.tags)

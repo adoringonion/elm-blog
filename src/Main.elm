@@ -2,25 +2,28 @@ module Main exposing (main)
 
 import Color
 import Date
-import Element exposing (Element)
+import Element exposing (Attr, Element)
 import Element.Font as Font
+import Getto.Url.Query.Decode as Getto
 import Head
 import Head.Seo as Seo
-import Html exposing (Html)
+import Html exposing (Html, p)
 import Index
 import Json.Decode
 import Layout
-import Markdown.Parser
-import Markdown.Renderer
+import Markdown exposing (Options, toHtmlWith)
 import Metadata exposing (Metadata)
 import Page.Article
 import Pages exposing (images, pages)
+import Pages.Directory exposing (indexPath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
 import Pages.PagePath exposing (PagePath)
 import Pages.Platform
 import Pages.StaticHttp as StaticHttp
 import Palette
+import Svg exposing (metadata)
+import Svg.Attributes exposing (mode)
 
 
 manifest : Manifest.Config Pages.PathKey
@@ -32,7 +35,7 @@ manifest =
     , description = "elm-pages-starter - A statically typed site generator."
     , iarcRatingId = Nothing
     , name = "elm-pages-starter"
-    , themeColor = Just Color.white
+    , themeColor = Just Color.black
     , startUrl = pages.index
     , shortName = Just "elm-pages-starter"
     , sourceIcon = images.iconPng
@@ -42,6 +45,10 @@ manifest =
 
 type alias Rendered =
     Element Msg
+
+
+type alias Query =
+    { tag : Maybe String }
 
 
 
@@ -59,7 +66,7 @@ main =
         , documents = [ markdownDocument ]
         , manifest = manifest
         , canonicalSiteUrl = canonicalSiteUrl
-        , onPageChange = Nothing
+        , onPageChange = Just onPageChange
         , internals = Pages.internals
         }
         |> Pages.Platform.withFileGenerator generateFiles
@@ -92,37 +99,45 @@ markdownDocument =
     , metadata = Metadata.decoder
     , body =
         \markdownBody ->
-            -- Html.div [] [ Markdown.toHtml [] markdownBody ]
-            Markdown.Parser.parse markdownBody
-                |> Result.withDefault []
-                |> Markdown.Renderer.render Markdown.Renderer.defaultHtmlRenderer
-                |> Result.withDefault [ Html.text "" ]
-                |> Html.div []
+            Markdown.toHtmlWith myOptions [] markdownBody
                 |> Element.html
                 |> List.singleton
-                |> Element.paragraph [ Element.width Element.fill ]
+                |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
                 |> Ok
     }
 
 
+myOptions : Options
+myOptions =
+    { githubFlavored = Just { tables = True, breaks = False }
+    , defaultHighlighting = Nothing
+    , sanitize = False
+    , smartypants = False
+    }
+
+
 type alias Model =
-    {}
+    Query
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model, Cmd.none )
+    ( { tag = Nothing }, Cmd.none )
 
 
-type alias Msg =
-    ()
+type Msg
+    = HasQuery Query
+    | NoMsg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        () ->
-            ( model, Cmd.none )
+        HasQuery query ->
+            ( query, Cmd.none )
+
+        NoMsg ->
+            ( { tag = Nothing }, Cmd.none )
 
 
 
@@ -131,6 +146,25 @@ update msg model =
 
 subscriptions _ _ _ =
     Sub.none
+
+
+onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment : Maybe String, metadata : Metadata } -> Msg
+onPageChange page =
+    case page.query of
+        Just query ->
+            decodeQuery query
+
+        Nothing ->
+            NoMsg
+
+
+decodeQuery : String -> Msg
+decodeQuery query =
+    let
+        tag =
+            query |> Getto.split |> Getto.entryAt [ "tag" ] Getto.string
+    in
+    HasQuery { tag = tag }
 
 
 view :
@@ -176,11 +210,20 @@ pageView model siteMetadata page viewForPage =
             Page.Article.view metadata viewForPage
 
         Metadata.BlogIndex ->
-            { title = "Bunlog"
-            , body =
-                [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata ]
-                ]
-            }
+            case model.tag of
+                Just tag ->
+                    { title = addTitle <| Just (tag ++ "のタグが付いた記事")
+                    , body =
+                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata (Just tag) ]
+                        ]
+                    }
+
+                Nothing ->
+                    { title = addTitle Nothing
+                    , body =
+                        [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata Nothing ]
+                        ]
+                    }
 
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
@@ -205,7 +248,7 @@ head metadata =
     commonHeadTags
         ++ (case metadata of
                 Metadata.Page meta ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
                         , siteName = "elm-pages-starter"
                         , image =
@@ -221,18 +264,18 @@ head metadata =
                         |> Seo.website
 
                 Metadata.Article meta ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages starter"
+                        , siteName = addTitle Nothing
                         , image =
-                            { url = meta.image
+                            { url = images.iconPng
                             , alt = meta.description
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
                         , description = meta.description
                         , locale = Nothing
-                        , title = meta.title
+                        , title = addTitle (Just meta.title)
                         }
                         |> Seo.article
                             { tags = []
@@ -243,9 +286,9 @@ head metadata =
                             }
 
                 Metadata.BlogIndex ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages"
+                        , siteName = addTitle Nothing
                         , image =
                             { url = images.iconPng
                             , alt = "elm-pages logo"
@@ -254,7 +297,7 @@ head metadata =
                             }
                         , description = siteTagline
                         , locale = Nothing
-                        , title = "elm-pages blog"
+                        , title = addTitle Nothing
                         }
                         |> Seo.website
            )
@@ -262,9 +305,19 @@ head metadata =
 
 canonicalSiteUrl : String
 canonicalSiteUrl =
-    "https://elm-pages-starter.netlify.com"
+    "https://blog.adoring-onion.dev/"
 
 
 siteTagline : String
 siteTagline =
-    "Starter blog for elm-pages"
+    "ぶんぶんのブログ"
+
+
+addTitle : Maybe String -> String
+addTitle pageTitle =
+    case pageTitle of
+        Just title ->
+            "Bunlog | " ++ title
+
+        Nothing ->
+            "Bunlog"

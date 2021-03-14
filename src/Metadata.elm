@@ -5,6 +5,7 @@ import Json.Decode as Decode exposing (Decoder)
 import List.Extra
 import Pages
 import Pages.ImagePath as ImagePath exposing (ImagePath)
+import String exposing (String)
 
 
 type Metadata
@@ -17,8 +18,9 @@ type alias ArticleMetadata =
     { title : String
     , description : String
     , published : Date
-    , image : ImagePath Pages.PathKey
+    , image : Maybe (ImagePath Pages.PathKey)
     , draft : Bool
+    , tags : List String
     }
 
 
@@ -40,7 +42,7 @@ decoder =
                         Decode.succeed BlogIndex
 
                     "blog" ->
-                        Decode.map5 ArticleMetadata
+                        Decode.map6 ArticleMetadata
                             (Decode.field "title" Decode.string)
                             (Decode.field "description" Decode.string)
                             (Decode.field "published"
@@ -61,6 +63,7 @@ decoder =
                                 |> Decode.maybe
                                 |> Decode.map (Maybe.withDefault False)
                             )
+                            (Decode.field "tags" (Decode.list Decode.string))
                             |> Decode.map Article
 
                     _ ->
@@ -68,22 +71,26 @@ decoder =
             )
 
 
-imageDecoder : Decoder (ImagePath Pages.PathKey)
+imageDecoder : Decoder (Maybe (ImagePath Pages.PathKey))
 imageDecoder =
     Decode.string
         |> Decode.andThen
             (\imageAssetPath ->
-                case findMatchingImage imageAssetPath of
-                    Nothing ->
-                        "I couldn't find that. Available images are:\n"
-                            :: List.map
-                                ((\x -> "\t\"" ++ x ++ "\"") << ImagePath.toString)
-                                Pages.allImages
-                            |> String.join "\n"
-                            |> Decode.fail
+                if imageAssetPath == "none" then
+                    Decode.succeed Nothing
 
-                    Just imagePath ->
-                        Decode.succeed imagePath
+                else
+                    case findMatchingImage imageAssetPath of
+                        Nothing ->
+                            "I couldn't find that. Available images are:\n"
+                                :: List.map
+                                    ((\x -> "\t\"" ++ x ++ "\"") << ImagePath.toString)
+                                    Pages.allImages
+                                |> String.join "\n"
+                                |> Decode.fail
+
+                        Just imagePath ->
+                            Decode.succeed (Just imagePath)
             )
 
 
