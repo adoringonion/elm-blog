@@ -31,12 +31,17 @@ publishedDateView metadata =
         )
 
 
-articleImageView : ImagePath Pages.PathKey -> Element msg
+articleImageView : Maybe (ImagePath Pages.PathKey) -> Element msg
 articleImageView articleImage =
-    Element.image [ Element.width Element.fill ]
-        { src = ImagePath.toString articleImage
-        , description = "Article cover photo"
-        }
+    case articleImage of
+        Just image ->
+            Element.image [ Element.width Element.fill ]
+                { src = ImagePath.toString image
+                , description = "Article cover photo"
+                }
+
+        Nothing ->
+            Element.row [] []
 
 
 tagsView : { a | tags : List String } -> Element msg
