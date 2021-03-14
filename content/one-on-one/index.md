@@ -9,6 +9,8 @@
 }
 ---
 
+## はじめに
+
 就活、嫌ですよね。世の中には「就活って楽しい！！圧倒的成長！！」なんて言う学生もいるらしいですが、共感できません。僕は就活なんて大嫌いです。自分がヤハウェだったら[ソドムとゴモラ](https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%89%E3%83%A0%E3%81%A8%E3%82%B4%E3%83%A2%E3%83%A9)みたいに滅ぼしてやりたいと思ってます。
 
 まあでもなんだかんだ社会性はある人間なので、サポーターズって有名な就活支援サービスに登録して就活っぽいことはしていました。それである日サポーターズから 1on1 イベントやるよ！1 日で 9 社と会えるよ！なんてメールが来て、ああ確かこれ Twitter にいる強い学生エンジニアがよく参加してたなーと思ってノリと勢いでエントリーしました。でも 18 人の選抜制で、まあ経験も技術力もない自分は落ちるだろうなと思ってました。
@@ -25,7 +27,7 @@
 
 かと言って嘘を書くのも嫌なので、困ったあげく、自分が総合職就活から IT エンジニアに転向したエピソードと、クソみたいな一発ネタの成果物を見せて笑いを取るという方向にしました。それしか書けないからね、しかたないね。
 
-<iframe class="iframe-center" src="https://docs.google.com/presentation/d/e/2PACX-1vReWMs5QsDqGmj_RBQtkJdzTkUX9QAeH_DOdJA1aXG06dU-JYvZu_7gsZsBw8cahPLpy5I2amXeXAFj/embed?start=false&loop=false&delayms=3000" frameborder="0" width="500" height="400" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<iframe class="iframe-center" src="https://docs.google.com/presentation/d/e/2PACX-1vReWMs5QsDqGmj_RBQtkJdzTkUX9QAeH_DOdJA1aXG06dU-JYvZu_7gsZsBw8cahPLpy5I2amXeXAFj/embed?start=false&loop=false&delayms=3000" frameborder="0" width="600" height="400" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 
 作ったスライドを一応上げておきます。適当なのは許してね
 
@@ -63,8 +65,7 @@ Visional Group さん、VOYAGE GROUP さん、Wantedly さん、サイバーエ�
 
 ネタ一本勝負だったので、各社からのフィードバックは全て「コミュニケーション能力」と「意欲・熱意」になりました。そりゃそうだ
 
-<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">わかるか？これが&quot;陽キャ&quot;のフィードバックだ <a href="https://t.co/xHdhJzqffO">pic.twitter.com/xHdhJzqffO</a></p>&mdash; ぶんぶん (@adoring_onion) <a href="https://twitter.com/adoring_onion/status/1241700296796979200?ref_src=twsrc%5Etfw">March 22, 2020</a></blockquote>
-<br><br>
+![image](images/posts/one-on-one/topImagea.jpg)
 
 まあこんな感じなので、存在するらしい「特別選考」みたいなものには一切誘われていません。ただ２件くらい Facebook づたいにインターンのエントリーを直接の形で紹介してもらいましたね。好意的に見てもらってると思っていいのか分かりませんけど。まあでも多分ネタ一本勝負をしていたのは僕だけだと思うので、顔は確実に覚えてもらったと思います。そういう意味では良かったのかなと思います。技術力なんて後でつければいいよね！！
 

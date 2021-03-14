@@ -1,30 +1,23 @@
 ---
-{
-  "type": "blog",
-  "title": "Haskellに入門した",
-  "published": "2020-09-20",
-  "description": "",
-  "tags": ["Haskell"],
-}
+type: blog
+title: Haskellに入門した
+published: "2020-09-20"
+description: ""
+tags: ["Haskell"]
+image: none
 ---
-
-```toc
-
-```
 
 ## Haskell との出会い
 
 関数型言語やってみたいな～～ていうか Haskell やりてえな～～ってなんとなく前から思っていました
 
-![image1](image1.jpg)
+![image1](images/posts/start-haskell/image1.jpg)
 
 でもなんか Haskell っていうと数学ガチ勢の人たちがやってるイメージがあって、怖くてなかなか手を出せていませんでした。そんな時、8 月にブックオフのセールがあって、どうせ 20%OFF だし何か新しい言語の本買うか～って思って手にとったのが Haskell, Rust, Scala の本でした。まあ Rust はやったことないわけじゃないしと思って候補から外して、Haskell か Scala で迷ったんですが、最後はフィーリングで Haskell の本を選びました。1200 円だったし
 
-<blockquote class="twitter-tweet tw-align-center"><p lang="ja" dir="ltr">ブックオフで50%OFFで売ってたので買った <a href="https://t.co/0ERXLqpQW5">pic.twitter.com/0ERXLqpQW5</a></p>&mdash; ぶんぶん (@adoring_onion) <a href="https://twitter.com/adoring_onion/status/1294960251960082433?ref_src=twsrc%5Etfw">August 16, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<block
 
 後から知ったんですけど、この本の評価微妙なんですね。[サポートページの正誤表](https://gihyo.jp/book/2017/978-4-7741-9237-6/support)見れば分かる通り、ありえないレベルで誤植が多いし、
-
-<blockquote class="twitter-tweet tw-align-center"><p lang="ja" dir="ltr">JOSN…??<br>型安全なJOSNってなんですか…?? <a href="https://t.co/MsgffNZUTZ">pic.twitter.com/MsgffNZUTZ</a></p>&mdash; ぶんぶん (@adoring_onion) <a href="https://twitter.com/adoring_onion/status/1295044970953334785?ref_src=twsrc%5Etfw">August 16, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 実際、書いてないことが自明であるかのように進んでいくので辛かったです。せめて使うパッケージ名は書いてほしかった。GitHub のサンプルコード見に行かないといけないのは面倒くさいので
 
@@ -58,7 +51,7 @@ countRead i parser = fmap read (count i parser)
 
 あとモナドもやっぱり詰まりました。何となく理解できて do 記法とかも読めるようになったんですけど、数学的な理解は一切してません。とりあえず
 
-![image2](image2.png)
+![image2](images/posts/start-haskell/image2.png)
 
 みたいな理解をしています。この理解でコード読めているので、多分大丈夫でしょう。
 
