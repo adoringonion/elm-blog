@@ -11,19 +11,16 @@ import Html exposing (Html, p)
 import Index
 import Json.Decode
 import Layout
-import Markdown exposing (Options, toHtmlWith)
+import Markdown exposing (Options)
 import Metadata exposing (Metadata)
 import Page.Article
 import Pages exposing (images, pages)
-import Pages.Directory exposing (indexPath)
 import Pages.Manifest as Manifest
 import Pages.Manifest.Category
 import Pages.PagePath exposing (PagePath)
 import Pages.Platform
 import Pages.StaticHttp as StaticHttp
-import Palette
 import Svg exposing (metadata)
-import Svg.Attributes exposing (mode)
 
 
 manifest : Manifest.Config Pages.PathKey
@@ -38,7 +35,7 @@ manifest =
     , themeColor = Just Color.black
     , startUrl = pages.index
     , shortName = Just "elm-pages-starter"
-    , sourceIcon = images.iconPng
+    , sourceIcon = images.icon
     , icons = []
     }
 
@@ -250,10 +247,10 @@ head metadata =
                 Metadata.Page meta ->
                     Seo.summary
                         { canonicalUrlOverride = Nothing
-                        , siteName = "elm-pages-starter"
+                        , siteName = "ぶんログ"
                         , image =
-                            { url = images.iconPng
-                            , alt = "elm-pages logo"
+                            { url = images.icon
+                            , alt = "ぶんログ"
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
@@ -268,7 +265,7 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
-                            { url = images.iconPng
+                            { url = images.icon
                             , alt = meta.description
                             , dimensions = Nothing
                             , mimeType = Nothing
@@ -290,8 +287,8 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
-                            { url = images.iconPng
-                            , alt = "elm-pages logo"
+                            { url = images.icon
+                            , alt = "ぶんログ"
                             , dimensions = Nothing
                             , mimeType = Nothing
                             }
