@@ -9,7 +9,9 @@
     "postinstall": "elm-tooling install"
   },
   "dependencies": {
-    "elm-pages": "^1.5.4"
+    "elm-pages": "^1.5.4",
+    "fetch-inject": "~1.7",
+    "highlight.js": "^10.6.0"
   },
   "devDependencies": {
     "elm-tooling": "^1.1.0",

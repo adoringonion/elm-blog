@@ -2,16 +2,16 @@ module Main exposing (main)
 
 import Color
 import Date
-import Element exposing (Element)
+import Element exposing (Attr, Element)
+import Element.Font as Font
 import Getto.Url.Query.Decode as Getto
 import Head
 import Head.Seo as Seo
-import Html exposing (Html)
+import Html exposing (Html, p)
 import Index
 import Json.Decode
 import Layout
-import Markdown exposing (..)
-import Markdown.Html exposing (tag)
+import Markdown exposing (Options, toHtmlWith)
 import Metadata exposing (Metadata)
 import Page.Article
 import Pages exposing (images, pages)
@@ -22,7 +22,7 @@ import Pages.PagePath exposing (PagePath)
 import Pages.Platform
 import Pages.StaticHttp as StaticHttp
 import Palette
-import Svg exposing (metadata, use)
+import Svg exposing (metadata)
 import Svg.Attributes exposing (mode)
 
 
@@ -93,31 +93,27 @@ generateFiles siteMetadata =
         []
 
 
-markdownDocument : { extension : String, metadata : Json.Decode.Decoder Metadata, body : String -> Result error Rendered }
+markdownDocument : { extension : String, metadata : Json.Decode.Decoder Metadata, body : String -> Result error (Element msg) }
 markdownDocument =
     { extension = "md"
     , metadata = Metadata.decoder
     , body =
         \markdownBody ->
-            toMarkdown markdownBody |> Ok
+            Markdown.toHtmlWith myOptions [] markdownBody
+                |> Element.html
+                |> List.singleton
+                |> Element.paragraph [ Element.width (Element.fill |> Element.maximum 800) ]
+                |> Ok
     }
 
 
 myOptions : Options
 myOptions =
     { githubFlavored = Just { tables = True, breaks = False }
-    , defaultHighlighting = Just "Elm"
+    , defaultHighlighting = Nothing
     , sanitize = False
     , smartypants = False
     }
-
-
-toMarkdown : String -> Rendered
-toMarkdown userInput =
-    Markdown.toHtmlWith myOptions [] userInput
-        |> Element.html
-        >> List.singleton
-        >> Element.paragraph []
 
 
 type alias Model =
@@ -272,7 +268,7 @@ head metadata =
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
-                            { url = meta.image
+                            { url = images.iconPng
                             , alt = meta.description
                             , dimensions = Nothing
                             , mimeType = Nothing
@@ -290,7 +286,7 @@ head metadata =
                             }
 
                 Metadata.BlogIndex ->
-                    Seo.summaryLarge
+                    Seo.summary
                         { canonicalUrlOverride = Nothing
                         , siteName = addTitle Nothing
                         , image =
