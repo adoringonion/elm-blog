@@ -152,3 +152,77 @@ tagsView metadata =
 !["1"](images/posts/elm-pages/a.jpg)
 
 ## タグが付いた記事だけ表示する
+
+タグがついた記事だけ表示するようにしてみましょう。今回は記事一覧ページにタグのクエリを付ける実装にします。まずタグをただのテキストからリンク付きボタンに変えましょう
+
+```elm
+tagsView : { a | tags : List String } -> Element msg
+tagsView metadata =
+    Element.row [ Element.spacing 10 ] (List.map tagLink metadata.tags)
+
+tagLink : String -> Element msg
+tagLink tagName =
+    Element.link [] { url = "blog/?tag=" ++ tagName, label = Element.text tagName}
+```
+
+タグがクリックできるようになるのでクリックすると、ちゃんと URL にクエリが付きます
+
+!["2"](images/posts/elm-pages/b.jpg)
+
+しかしこのままだと記事の表示が変わりません。Elm がタグのクエリを解釈していないからです。なのでタグのクエリの有無を状態として持たせて、タグボタンをクリックした時にそれを更新するといういつもの`Model View Update`を使いましょう。
+
+elm-pages の初期テンプレートは Model も Update も使われておらず、状態を持っていません。まずは Model にクエリを持つようにさせましょう。タグのクエリを持っていない（タグをクリックしていない）場合もあるので、`Maybe String`型にしましょう
+
+```elm
+type alias Query =
+    { tag : Maybe String }
+
+type alias Model =
+    Query
+```
+
+update と Msg もタグのクエリを持っている時と持っていない時で分岐させます
+
+```elm
+type Msg
+    = HasQuery Query
+    | NoMsg
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        HasQuery query ->
+            ( query, Cmd.none )
+
+        NoMsg ->
+            ( { tag = Nothing }, Cmd.none
+```
+
+これで Model と update はできましたが、Msg はいったいどこから発行するのでしょうか？実は elm-pages にはページを移動するごとに実行される`onPageChange`という関数が用意されていて、この関数が引数として URL のクエリを受け取ることができます。この関数を使ってページ移動ごとにクエリを受け取って、それを Msg として発行します。初期テンプレートでは onPageChange を使わない設定になっているので、関数を作りつつ、`main`の`Pages.Platform.init`の`onPageChange`に入れます
+
+```elm
+main : Pages.Platform.Program Model Msg Metadata Rendered Pages.PathKey
+main =
+    Pages.Platform.init
+        { init = \_ -> init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        , documents = [ markdownDocument ]
+        , manifest = manifest
+        , canonicalSiteUrl = canonicalSiteUrl
+        , onPageChange = Just onPageChange -- ここに入れる
+        , internals = Pages.internals
+        }
+        |> Pages.Platform.withFileGenerator generateFiles
+        |> Pages.Platform.toProgram
+
+onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment : Maybe String, metadata : Metadata } -> Msg
+onPageChange page =
+    case page.query of
+        Just query ->
+            HasQuery query
+
+        Nothing ->
+            NoMsg
+```
