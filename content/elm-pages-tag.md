@@ -149,7 +149,7 @@ tagsView metadata =
 ```
 
 これで表示されるはずです
-!["1"](images/posts/elm-pages/a.jpg)
+!["1"](images/posts/elm-pages-tag/a.jpg)
 
 ## タグが付いた記事だけ表示する
 
@@ -167,7 +167,7 @@ tagLink tagName =
 
 タグがクリックできるようになるのでクリックすると、ちゃんと URL にクエリが付きます
 
-!["2"](images/posts/elm-pages/b.jpg)
+!["2"](images/posts/elm-pages-tag/b.jpg)
 
 しかしこのままだと記事の表示が変わりません。Elm がタグのクエリを解釈していないからです。なのでタグのクエリの有無を状態として持たせて、タグボタンをクリックした時にそれを更新するといういつもの`Model View Update`を使いましょう。
 
@@ -179,6 +179,10 @@ type alias Query =
 
 type alias Model =
     Query
+
+init : ( Model, Cmd Msg )
+init =
+    ( { tag = Nothing }, Cmd.none )
 ```
 
 update と Msg もタグのクエリを持っている時と持っていない時で分岐させます
@@ -221,8 +225,126 @@ onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment :
 onPageChange page =
     case page.query of
         Just query ->
-            HasQuery query
+            HasQuery { tag = Just query }
 
         Nothing ->
             NoMsg
 ```
+
+これでクエリの有無によって Elm の状態を更新することができるようになったので、状態に応じてタグがついた記事だけ表示できるようにしましょう。
+
+初期テンプレには記事の Markdown には draft フラグが含まれていて、`Index.elm`の`view`でフィルターを使って darft が false の記事だけ表示するようになっています。これに習ってタグが付いた記事だけ表示するフィルターを作りましょう。
+
+```elm
+view :
+    List ( PagePath Pages.PathKey, Metadata )
+    -> Maybe String
+    -> Element msg
+view posts tag =
+    Element.column [ Element.spacing 20 ]
+        (posts
+            |> List.filterMap
+                (\( path, metadata ) ->
+                    case metadata of
+                        Metadata.Article meta ->
+                            if meta.draft then
+                                Nothing
+
+                            else
+                                Just ( path, meta )
+
+                        _ ->
+                            Nothing
+                )
+            |> tagFilter tag -- ここにフィルター関数を差し込む
+            |> List.sortWith postPublishDateDescending
+            |> List.map postSummary
+        )
+
+
+tagFilter : Maybe String -> List PostEntry -> List PostEntry
+tagFilter tag posts =
+    case tag of
+        Just value ->
+            List.filter (hasTag value) posts
+
+        Nothing ->  -- タグが指定されていない場合は全記事表示
+            posts
+
+
+hasTag : String -> PostEntry -> Bool
+hasTag tag ( _, metadata ) =
+    List.member tag metadata.tags
+```
+
+Elm はパイプラインのおかげでデータが流れているように見えることも、List を操作する関数がたくさんあるのも良いですね。おそらくこう書くと「view 関数が tag 引数受け取ってないぜ」ってコンパイラに言われるので、`Main.elm`の`pageView`関数の中で受け取るように変更しましょう。もともと`pageView`で Model を受け取るようになっているので、そこから tag を取り出しましょう。
+
+```elm
+pageView :
+    Model
+    -> List ( PagePath Pages.PathKey, Metadata )
+    -> { path : PagePath Pages.PathKey, frontmatter : Metadata }
+    -> Rendered
+    -> { title : String, body : List (Element Msg) }
+pageView model siteMetadata page viewForPage =
+    case page.frontmatter of
+        Metadata.Page metadata ->
+            { title = metadata.title
+            , body =
+                [ viewForPage
+                ]
+
+            --        |> Element.textColumn
+            --            [ Element.width Element.fill
+            --            ]
+            }
+
+        Metadata.Article metadata ->
+            Page.Article.view metadata viewForPage
+
+        Metadata.Author author ->
+            { title = author.name
+            , body =
+                [ Palette.blogHeading author.name
+                , Author.view [] author
+                , Element.paragraph [ Element.centerX, Font.center ] [ viewForPage ]
+                ]
+            }
+
+        Metadata.BlogIndex ->
+            { title = "elm-pages blog"
+            , body =
+                [ Element.column [ Element.padding 20, Element.centerX ] [ Index.view siteMetadata model.tag ]
+                ]
+            }
+```
+
+ここまで書くとコンパイルエラーが起きなくなると思うので、早速記事内のタグをクリックしてみましょう
+
+!["c"](images/posts/elm-pages-tag/c.jpg)
+
+記事が全く表示されなくなってしまいました。なぜでしょうか？`model.tag`の実際の値を見てみると`?tag=タグ名`となっています。つまり test というタグを選択しているこの場合だと、`?tag=test`というタグが付いている記事だけを表示することになっていますが、`test`という文字だけを取り出せるようにしたいので、クエリをデコードする関数を作りましょう。デコードする方法は様々あると思いますが、今回はたまたま見つけた[getto-systems/elm-url](https://package.elm-lang.org/packages/getto-systems/elm-url/latest/)というライブラリが簡単だったので、これを使ってデコードします
+
+```elm
+import Getto.Url.Query.Decode as Getto
+
+onPageChange : { path : PagePath Pages.PathKey, query : Maybe String, fragment : Maybe String, metadata : Metadata } -> Msg
+onPageChange page =
+    case page.query of
+        Just query ->
+            decodeQuery query -- ここでデコードするように変更
+
+        Nothing ->
+            NoMsg
+
+
+decodeQuery : String -> Msg
+decodeQuery query =
+    let
+        tag =
+            query |> Getto.split |> Getto.entryAt [ "tag" ] Getto.string
+    in
+    HasQuery { tag = tag }
+```
+
+これでタグが付いた記事だけ表示されるようになるはずです。実際に色んなタグを付けた記事を作ってみて試してみてください

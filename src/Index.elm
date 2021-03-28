@@ -21,7 +21,7 @@ view :
     List ( PagePath Pages.PathKey, Metadata )
     -> Maybe String
     -> Element msg
-view posts tagName =
+view posts tag =
     Element.column [ Element.spacing 20 ]
         (posts
             |> List.filterMap
@@ -37,15 +37,15 @@ view posts tagName =
                         _ ->
                             Nothing
                 )
-            |> tagFilter tagName
+            |> tagFilter tag
             |> List.sortWith postPublishDateDescending
             |> List.map postSummary
         )
 
 
 tagFilter : Maybe String -> List PostEntry -> List PostEntry
-tagFilter tagName posts =
-    case tagName of
+tagFilter tag posts =
+    case tag of
         Just value ->
             List.filter (hasTag value) posts
 
@@ -54,8 +54,8 @@ tagFilter tagName posts =
 
 
 hasTag : String -> PostEntry -> Bool
-hasTag tagName ( _, metadata ) =
-    List.member tagName metadata.tags
+hasTag tag ( _, metadata ) =
+    List.member tag metadata.tags
 
 
 postPublishDateDescending : PostEntry -> PostEntry -> Order
