@@ -1,4 +1,4 @@
-module DocumentSvg exposing (view)
+module DocumentSvg exposing (..)module DocumentSvg exposing (view)
 
 import Color exposing (Color)
 import Element exposing (Element)

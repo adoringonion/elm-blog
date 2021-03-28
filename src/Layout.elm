@@ -1,6 +1,5 @@
 module Layout exposing (view)
 
-import DocumentSvg
 import Element exposing (Element)
 import Element.Background
 import Element.Border
