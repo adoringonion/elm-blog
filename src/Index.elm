@@ -102,7 +102,9 @@ articleIndex metadata =
 postPreview : Metadata.ArticleMetadata -> Element msg
 postPreview post =
     Element.row
-        [ Element.width Element.fill ]
+        [ Element.width Element.fill
+        , Element.spacing 70
+        ]
         [ Element.textColumn
             [ Element.centerX
             , Element.width (Element.fill |> Element.maximum 300)
