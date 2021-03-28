@@ -1,6 +1,5 @@
 module Layout exposing (view)
 
-import DocumentSvg
 import Element exposing (Element)
 import Element.Background
 import Element.Border
@@ -28,13 +27,13 @@ view document page =
         case page.frontmatter of
             Metadata.BlogIndex ->
                 Element.column
-                    [ Element.width (Element.fill |> Element.minimum 530) ]
+                    [ Element.width (Element.fill |> Element.minimum 400) ]
                     [ header page.path
                     , Element.column
                         [ Element.padding 30
                         , Element.spacing 40
                         , Element.Region.mainContent
-                        , Element.width (Element.fill |> Element.maximum 800)
+                        , Element.width (Element.fill |> Element.maximum 700)
                         , Element.centerX
                         ]
                         document.body
@@ -48,13 +47,13 @@ view document page =
 
             _ ->
                 Element.column
-                    [ Element.width (Element.fill |> Element.minimum 530) ]
+                    [ Element.width (Element.fill |> Element.minimum 400) ]
                     [ header page.path
                     , Element.column
                         [ Element.padding 30
                         , Element.spacing 40
                         , Element.Region.mainContent
-                        , Element.width (Element.fill |> Element.maximum 800)
+                        , Element.width (Element.fill |> Element.maximum 700 |> Element.minimum 400)
                         , Element.centerX
                         ]
                         document.body
