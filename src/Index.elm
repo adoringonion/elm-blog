@@ -21,31 +21,43 @@ view :
     List ( PagePath Pages.PathKey, Metadata )
     -> Maybe String
     -> Element msg
-view posts tagName =
+view posts tag =
     Element.column [ Element.spacing 20 ]
-        (posts
-            |> List.filterMap
-                (\( path, metadata ) ->
-                    case metadata of
-                        Metadata.Article meta ->
-                            if meta.draft then
-                                Nothing
+        (tagTitle tag
+            :: (posts
+                    |> List.filterMap
+                        (\( path, metadata ) ->
+                            case metadata of
+                                Metadata.Article meta ->
+                                    if meta.draft then
+                                        Nothing
 
-                            else
-                                Just ( path, meta )
+                                    else
+                                        Just ( path, meta )
 
-                        _ ->
-                            Nothing
-                )
-            |> tagFilter tagName
-            |> List.sortWith postPublishDateDescending
-            |> List.map postSummary
+                                _ ->
+                                    Nothing
+                        )
+                    |> tagFilter tag
+                    |> List.sortWith postPublishDateDescending
+                    |> List.map postSummary
+               )
         )
 
 
+tagTitle : Maybe String -> Element msg
+tagTitle tag =
+    case tag of
+        Just value ->
+            Element.el [ Element.centerX, Element.Font.bold, Element.Font.size 30 ] <| Element.text ("タグ " ++ value ++ " が付いた記事")
+
+        Nothing ->
+            Element.none
+
+
 tagFilter : Maybe String -> List PostEntry -> List PostEntry
-tagFilter tagName posts =
-    case tagName of
+tagFilter tag posts =
+    case tag of
         Just value ->
             List.filter (hasTag value) posts
 
@@ -54,8 +66,8 @@ tagFilter tagName posts =
 
 
 hasTag : String -> PostEntry -> Bool
-hasTag tagName ( _, metadata ) =
-    List.member tagName metadata.tags
+hasTag tag ( _, metadata ) =
+    List.member tag metadata.tags
 
 
 postPublishDateDescending : PostEntry -> PostEntry -> Order
@@ -102,7 +114,9 @@ articleIndex metadata =
 postPreview : Metadata.ArticleMetadata -> Element msg
 postPreview post =
     Element.row
-        [ Element.width Element.fill ]
+        [ Element.width Element.fill
+        , Element.spacing 70
+        ]
         [ Element.textColumn
             [ Element.centerX
             , Element.width (Element.fill |> Element.maximum 300)
