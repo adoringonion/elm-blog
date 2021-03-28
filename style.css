@@ -49,3 +49,9 @@ blockquote {
   border-left: solid 5px rgb(107, 169, 227);
   padding-left: 10px;
 }
+
+img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}

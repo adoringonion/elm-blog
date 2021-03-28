@@ -225,8 +225,7 @@ pageView model siteMetadata page viewForPage =
 
 commonHeadTags : List (Head.Tag Pages.PathKey)
 commonHeadTags =
-    [ Head.rssLink "/blog/feed.xml"
-    , Head.sitemapLink "/sitemap.xml"
+    [ Head.metaName "viewport" (Head.raw "width=device-width,initial-scale=0.5 user-scalable=no, target-densitydpi=device-dpi")
     ]
 
 
@@ -302,7 +301,7 @@ head metadata =
 
 canonicalSiteUrl : String
 canonicalSiteUrl =
-    "https://blog.adoring-onion.dev/"
+    "https://adoringonion.com/"
 
 
 siteTagline : String
