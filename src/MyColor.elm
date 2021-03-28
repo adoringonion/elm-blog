@@ -1,7 +1,8 @@
 module MyColor exposing (primary)
 
-import Element exposing (Element, padding, rgb)
+import Element exposing (Element, padding, rgb255)
 
 
 primary : Element.Color
-primary = rgb 146 146 232
+primary =
+    rgb255 107 169 227

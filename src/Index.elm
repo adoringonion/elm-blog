@@ -23,24 +23,36 @@ view :
     -> Element msg
 view posts tag =
     Element.column [ Element.spacing 20 ]
-        (posts
-            |> List.filterMap
-                (\( path, metadata ) ->
-                    case metadata of
-                        Metadata.Article meta ->
-                            if meta.draft then
-                                Nothing
+        (tagTitle tag
+            :: (posts
+                    |> List.filterMap
+                        (\( path, metadata ) ->
+                            case metadata of
+                                Metadata.Article meta ->
+                                    if meta.draft then
+                                        Nothing
 
-                            else
-                                Just ( path, meta )
+                                    else
+                                        Just ( path, meta )
 
-                        _ ->
-                            Nothing
-                )
-            |> tagFilter tag
-            |> List.sortWith postPublishDateDescending
-            |> List.map postSummary
+                                _ ->
+                                    Nothing
+                        )
+                    |> tagFilter tag
+                    |> List.sortWith postPublishDateDescending
+                    |> List.map postSummary
+               )
         )
+
+
+tagTitle : Maybe String -> Element msg
+tagTitle tag =
+    case tag of
+        Just value ->
+            Element.el [ Element.centerX, Element.Font.bold, Element.Font.size 30 ] <| Element.text ("タグ " ++ value ++ " が付いた記事")
+
+        Nothing ->
+            Element.none
 
 
 tagFilter : Maybe String -> List PostEntry -> List PostEntry

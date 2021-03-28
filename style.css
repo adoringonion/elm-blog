@@ -2,7 +2,7 @@
 
 h2 {
   padding: 8px;
-  border-bottom: solid 1px rgb(180, 180, 180);
+  border-bottom: solid 1px rgb(107, 169, 227);
 }
 
 p {
@@ -46,7 +46,6 @@ code {
 }
 
 blockquote {
-  border-left: solid 5px royalblue;
+  border-left: solid 5px rgb(107, 169, 227);
   padding-left: 10px;
 }
-
