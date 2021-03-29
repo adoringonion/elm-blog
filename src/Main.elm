@@ -2,8 +2,7 @@ module Main exposing (main)
 
 import Color
 import Date
-import Element exposing (Attr, Element)
-import Element.Font as Font
+import Element exposing (Element)
 import Getto.Url.Query.Decode as Getto
 import Head
 import Head.Seo as Seo
@@ -67,6 +66,7 @@ main =
         , internals = Pages.internals
         }
         |> Pages.Platform.withFileGenerator generateFiles
+        |> Pages.Platform.withGlobalHeadTags commonHeadTags
         |> Pages.Platform.toProgram
 
 

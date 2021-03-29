@@ -1,16 +1,14 @@
 module Layout exposing (view)
 
 import Element exposing (Element)
-import Element.Background
 import Element.Border
 import Element.Font as Font
 import Element.Region
 import Html exposing (Html)
 import Metadata exposing (Metadata)
 import Pages
-import Pages.Directory as Directory exposing (Directory)
 import Pages.ImagePath as ImagePath
-import Pages.PagePath as PagePath exposing (PagePath)
+import Pages.PagePath exposing (PagePath)
 import Palette
 
 
@@ -69,7 +67,7 @@ view document page =
 
 header : PagePath Pages.PathKey -> Element msg
 header currentPath =
-    Element.column [ Element.width Element.fill ]
+    Element.column [ Element.width (Element.fill |> Element.minimum 500) ]
         [ Element.row
             [ Element.paddingXY 25 15
             , Element.spaceEvenly

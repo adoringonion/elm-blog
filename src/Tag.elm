@@ -1,16 +1,42 @@
-module Tag exposing (tag)
+module Tag exposing (tag, tagLink)
 
-import Element exposing (Element, padding, rgb)
+import Element exposing (Element, padding)
+import Element.Background
 import Element.Border
-import MyColor
+import Element.Font
+import Palette
 
 
 tag : String -> Element msg
 tag tagName =
-    Element.link
+    Element.el
         [ padding 2
-        , Element.Border.color MyColor.primary
+        , Element.Border.color Palette.color.primary
         , Element.Border.solid
-        , Element.Border.widthEach { bottom = 3, right = 0, left = 0, top = 0 }
+        , Element.padding 5
+        , Element.Border.rounded 4
+        , Element.Border.width 1
         ]
-        { url = "/?tag=" ++ tagName, label = Element.text tagName }
+        (Element.el
+            [ Element.Font.color Palette.color.primary
+            ]
+            (Element.text tagName)
+        )
+
+
+tagLink : String -> Element msg
+tagLink tagName =
+    Element.link
+        [ Element.Border.color Palette.color.primary
+        , Element.Border.solid
+        , Element.Border.width 1
+        , Element.Border.rounded 3
+        , Element.padding 5
+        ]
+        { url = "/?tag=" ++ tagName
+        , label =
+            Element.el
+                [ Element.Font.color Palette.color.primary
+                ]
+                (Element.text tagName)
+        }
