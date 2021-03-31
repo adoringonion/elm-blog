@@ -46,7 +46,7 @@ articleImageView articleImage =
 
 tagsView : { a | tags : List String } -> Element msg
 tagsView metadata =
-    Element.row [ Element.spacing 10 ] (List.map Tag.tag metadata.tags)
+    Element.row [ Element.spacing 10 ] (List.map Tag.tagLink metadata.tags)
 
 
 addTitle : Maybe String -> String

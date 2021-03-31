@@ -11,6 +11,7 @@ import Pages.ImagePath exposing (ImagePath)
 import Pages.PagePath as PagePath exposing (PagePath)
 import Svg exposing (metadata)
 import Tag
+import Element exposing (clip)
 
 
 type alias PostEntry =
@@ -143,7 +144,7 @@ articleImageView : Maybe (ImagePath Pages.PathKey) -> Element msg
 articleImageView articleImage =
     case articleImage of
         Just image ->
-            Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.clip ]
+            Element.image [ Element.width (Element.fill |> Element.minimum 100 |> Element.maximum 180), Element.height (Element.shrink |> Element.maximum 100), Element.Border.rounded 5, clip ]
                 { src = Pages.ImagePath.toString image
                 , description = "Article cover photo"
                 }

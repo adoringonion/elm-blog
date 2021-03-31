@@ -24,7 +24,7 @@ img {
 }
 
 pre {
-  background-color: #002b36;
+  background-color: rgb(20, 27, 65);
   color: #c5dfe2;
   padding: 10px;
   overflow: scroll;
@@ -34,7 +34,7 @@ pre {
 }
 
 pre code {
-  background-color: #002b36;
+  background-color: rgb(20, 27, 65);
   color: #c5dfe2;
 }
 
@@ -54,4 +54,12 @@ img {
   width: 100%;
   max-width: 100%;
   height: auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: rgb(107, 169, 227);
 }
