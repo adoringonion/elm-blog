@@ -23,6 +23,10 @@ img {
   margin: auto;
 }
 
+p {
+  line-height: 1.5em;
+}
+
 pre {
   background-color: rgb(20, 27, 65);
   color: #c5dfe2;
