@@ -28,7 +28,7 @@ view document page =
                     [ Element.width (Element.fill |> Element.minimum 400) ]
                     [ header page.path
                     , Element.column
-                        [ Element.padding 30
+                        [ Element.padding 23
                         , Element.spacing 40
                         , Element.Region.mainContent
                         , Element.width (Element.fill |> Element.maximum 700)
@@ -67,7 +67,7 @@ view document page =
 
 header : PagePath Pages.PathKey -> Element msg
 header currentPath =
-    Element.column [ Element.width (Element.fill |> Element.minimum 500) ]
+    Element.column [ Element.width Element.fill ]
         [ Element.row
             [ Element.paddingXY 25 15
             , Element.spaceEvenly
