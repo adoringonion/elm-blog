@@ -313,7 +313,7 @@ addTitle : Maybe String -> String
 addTitle pageTitle =
     case pageTitle of
         Just title ->
-            "Bunlog | " ++ title
+            title ++ " | Bunlog"
 
         Nothing ->
             "Bunlog"
