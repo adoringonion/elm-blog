@@ -35,4 +35,6 @@ jobs:
           # The destination bucket region
           dist-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           bucket-region: ${{ secrets.S3_BUCKET_REGION }}
-          invalidation: /*
+          invalidation: /
+          delete-removed: true
+          private: true
