@@ -3,19 +3,12 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "elm-pages develop",
-    "serve": "npm run build && http-server ./dist -a localhost -p 3000 -c-1",
-    "build": "elm-pages build",
-    "postinstall": "elm-tooling install"
+    "start": "elm-pages dev",
+    "build": "elm-pages build"
   },
   "dependencies": {
-    "elm-pages": "^2.1.2",
-    "fetch-inject": "~1.7",
+    "elm-pages": "^2.1.4",
     "highlight.js": "^10.6.0",
     "little-loader": "^0.2.0"
-  },
-  "devDependencies": {
-    "elm-tooling": "^1.1.0",
-    "http-server": "^0.12.3"
   }
 }
