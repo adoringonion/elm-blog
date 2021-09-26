@@ -15,7 +15,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared exposing (Msg)
 import View exposing (View)
-import DataSource 
+import Path
 
 
 type alias Model =
@@ -48,7 +48,7 @@ routes =
 
 data : RouteParams -> DataSource.DataSource Data
 data route =
-    let 
+    let
         entries =
             Article.allPosts
                 |> DataSource.map
@@ -63,7 +63,7 @@ data route =
                             )
                             allPost
                     )
-        
+
         tagName =
             Article.allTags
                 |> DataSource.map
@@ -74,8 +74,8 @@ data route =
                 |> DataSource.map (Maybe.map (\tag -> tag.name))
                 |> DataSource.map (Maybe.withDefault "")
     in
+    DataSource.map2 Data entries tagName
 
-       DataSource.map2 Data entries tagName
 
 head :
     StaticPayload Data RouteParams
@@ -85,7 +85,7 @@ head static =
         { canonicalUrlOverride = Nothing
         , siteName = ""
         , image =
-            { url = Pages.Url.external "images/icon.jpeg"
+            { url = [ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath
             , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
@@ -116,7 +116,7 @@ wrapper : List Entry -> String -> Element Msg
 wrapper entries tag =
     Element.column
         [ Element.paddingXY 50 70
-        , Element.width Element.fill 
+        , Element.width Element.fill
         , centerX
         , Element.spacing 40
         ]

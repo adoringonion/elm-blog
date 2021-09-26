@@ -16,6 +16,7 @@ import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared exposing (Msg)
 import View exposing (View)
+import Path
 
 
 type alias Model =
@@ -64,7 +65,7 @@ head static =
         { canonicalUrlOverride = Nothing
         , siteName = ""
         , image =
-            { url = Pages.Url.external "images/icon.jpeg"
+            { url = [ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath
             , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
