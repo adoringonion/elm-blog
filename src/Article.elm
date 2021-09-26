@@ -1,4 +1,4 @@
-module Article exposing (Entry, Tag, allPosts, allTags)
+module Article exposing (Entry, Tag, allPosts, allTags, getPostById)
 
 import DataSource
 import DataSource.Http
@@ -11,7 +11,8 @@ type alias Entry =
     { id : String
     , title : String
     , body : String
-    , published : Date
+    , publishedAt : Date
+    , revisedAt : Date
     , tags : List Tag
     }
 
@@ -35,6 +36,21 @@ allPosts =
         )
         (contentsDecoder entryDecoder)
 
+getPostById : String -> DataSource.DataSource Entry
+getPostById id =
+    DataSource.Http.request
+        (Secrets.succeed
+            (\apiKey ->
+                { url = "https://adoringonion.microcms.io/api/v1/blog/" ++ id
+                , method = "GET"
+                , headers = [ ( "X-API-KEY", apiKey ) ]
+                , body = DataSource.Http.emptyBody
+                }
+            )
+            |> Secrets.with "API_KEY"
+        )
+        entryDecoder
+
 allTags : DataSource.DataSource (List Tag)
 allTags =
     DataSource.Http.request
@@ -48,7 +64,7 @@ allTags =
             )
             |> Secrets.with "API_KEY"
         )
-    (contentsDecoder tagDecoder)
+        (contentsDecoder tagDecoder)
 
 
 contentsDecoder : Decode.Decoder a -> Decode.Decoder (List a)
@@ -59,21 +75,24 @@ contentsDecoder decoder =
 
 entryDecoder : Decode.Decoder Entry
 entryDecoder =
-    Decode.map5 Entry
+    Decode.map6 Entry
         (Decode.field "id" Decode.string)
         (Decode.field "title" Decode.string)
         (Decode.field "body" Decode.string)
-        (Decode.field "updatedAt"
-            (Decode.string
-                |> Decode.andThen
-                    (\isoString ->
-                        String.slice 0 10 isoString
-                            |> Date.fromIsoString
-                            |> Decode.fromResult
-                    )
-            )
-        )
+        (Decode.field "publishedAt" dateDecoder)
+        (Decode.field "revisedAt" dateDecoder)
         (Decode.field "tags" <| Decode.list tagDecoder)
+
+
+dateDecoder : Decode.Decoder Date
+dateDecoder =
+    Decode.string
+        |> Decode.andThen
+            (\isoString ->
+                String.slice 0 10 isoString
+                    |> Date.fromIsoString
+                    |> Decode.fromResult
+            )
 
 
 tagDecoder : Decode.Decoder Tag

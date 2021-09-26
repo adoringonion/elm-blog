@@ -5,12 +5,10 @@ import Css exposing (static)
 import DataSource
 import Date exposing (..)
 import Element exposing (..)
-import Element.Background as Background exposing (..)
-import Element.Font as Font exposing (Font)
+import Element.Background exposing (..)
+import Element.Font as Font
 import Head
 import Head.Seo as Seo
-import Html.Parser as Parser
-import Html.Parser.Util as ParserUtil
 import Markdown
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
@@ -54,23 +52,7 @@ routes =
 
 data : RouteParams -> DataSource.DataSource Data
 data route =
-    Article.allPosts
-        |> DataSource.map
-            (\allPost ->
-                List.filter
-                    (\post -> post.id == route.slug)
-                    allPost
-                    |> List.head
-            )
-        |> DataSource.andThen
-            (\maybepost ->
-                case maybepost of
-                    Just post ->
-                        DataSource.succeed post
-
-                    Nothing ->
-                        DataSource.fail (route.slug ++ " is not found")
-            )
+    Article.getPostById route.slug
 
 
 head :
@@ -81,16 +63,22 @@ head static =
         { canonicalUrlOverride = Nothing
         , siteName = ""
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = Pages.Url.external "images/icon.jpeg"
+            , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
         , description = "TODO"
         , locale = Nothing
-        , title = static.data.title ++ " | MyBlog" -- metadata.title -- TODO
+        , title = static.data.title ++ " | Bunlog"
         }
-        |> Seo.website
+        |> Seo.article
+            { expirationTime = Nothing
+            , modifiedTime = Just (Date.format "yyy-MM-dd" static.data.revisedAt)
+            , publishedTime = Just (Date.format "yyy-MM-dd" static.data.publishedAt)
+            , section = Nothing
+            , tags = List.map (\tag -> tag.name) static.data.tags
+            }
 
 
 type alias Data =
@@ -116,7 +104,7 @@ viewPost entry =
         , Element.paddingXY 0 50
         ]
         [ viewTitle entry.title
-        , dateAndTags entry.published entry.tags
+        , dateAndTags entry.publishedAt entry.tags
         , column
             [ Element.centerX
             , Element.paddingXY 30 20

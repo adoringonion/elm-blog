@@ -6,18 +6,16 @@ import DataSource
 import Date exposing (..)
 import Element exposing (..)
 import Element.Background exposing (..)
-import Element.Border
 import Element.Font
 import Head
 import Head.Seo as Seo
-import List.Extra exposing (unique)
 import Page exposing (Page, StaticPayload)
-import Page.Index exposing (articleCard)
+import Page.Index
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Shared exposing (Msg)
 import View exposing (View)
-import DataSource exposing (DataSource)
+import DataSource 
 
 
 type alias Model =
@@ -87,14 +85,14 @@ head static =
         { canonicalUrlOverride = Nothing
         , siteName = ""
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = Pages.Url.external "images/icon.jpeg"
+            , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = "タグ " ++ static.routeParams.tag ++ "がついた記事一覧"
         , locale = Nothing
-        , title = static.routeParams.tag ++ " | MyBlog" -- metadata.title -- TODO
+        , title = "タグ " ++ static.routeParams.tag ++ "がついた記事一覧 | MyBlog" -- metadata.title -- TODO
         }
         |> Seo.website
 
@@ -108,7 +106,7 @@ view :
     -> Shared.Model
     -> StaticPayload Data RouteParams
     -> View Msg
-view maybeUrl sharedModel static =
+view _ _ static =
     { title = static.data.tag ++ " | Blog"
     , body = [ wrapper static.data.entries static.data.tag ]
     }

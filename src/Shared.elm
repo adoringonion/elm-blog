@@ -2,14 +2,13 @@ module Shared exposing (Data, Model, Msg(..), SharedMsg(..), template)
 
 import Browser.Navigation
 import DataSource
-import Date exposing (Date)
 import Element exposing (Element, column, layout, link, row, text)
 import Element.Background exposing (..)
 import Element.Border
-import Element.Font as Font exposing (Font)
+import Element.Font as Font
 import Element.Region exposing (navigation)
 import Html exposing (Html)
-import Pages.Flags exposing (Flags)
+import Pages.Flags
 import Pages.PageUrl exposing (PageUrl)
 import Path exposing (Path)
 import Route exposing (Route)
@@ -126,7 +125,7 @@ header =
             [ Font.bold
             , Font.size 30
             ]
-            { url = "/", label = text "MyBlog" }
+            { url = "/", label = text "Bunlog" }
         , menu
         ]
 

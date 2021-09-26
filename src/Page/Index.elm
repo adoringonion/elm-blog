@@ -1,24 +1,21 @@
 module Page.Index exposing (..)
 
 import Article exposing (..)
-import Browser.Navigation exposing (Key)
+import Browser.Navigation
 import Css exposing (static)
 import DataSource exposing (DataSource)
 import Date exposing (..)
 import Element exposing (..)
-import Element.Background
 import Element.Border
 import Element.Font
 import Element.Input exposing (button)
-import Element.Region exposing (description)
 import Head
 import Head.Seo as Seo
-import Page exposing (Page, PageWithState, StaticPayload)
+import Page exposing (PageWithState, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
 import Path exposing (Path)
 import Shared
-import String exposing (left)
 import View exposing (View)
 
 
@@ -85,19 +82,19 @@ data =
 head :
     StaticPayload Data RouteParams
     -> List Head.Tag
-head static =
+head _ =
     Seo.summary
         { canonicalUrlOverride = Nothing
         , siteName = ""
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = Pages.Url.external "images/icon.jpeg"
+            , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = "ぶんぶんのブログです"
         , locale = Nothing
-        , title = "MyBlog" -- metadata.title -- TODO
+        , title = "Bunlog"
         }
         |> Seo.website
 
@@ -112,7 +109,7 @@ view :
     -> Model
     -> StaticPayload Data RouteParams
     -> View Msg
-view maybeUrl sharedModel model static =
+view _ _ model static =
     { title = "MyBlog"
     , body = [ articleColumn static.data model ]
     }
@@ -188,8 +185,8 @@ viewTags tags =
         )
 
 
-publishedDateView : { a | published : Date } -> Element msg
+publishedDateView : { a | publishedAt : Date } -> Element msg
 publishedDateView metadata =
     Element.paragraph
         [ Element.Font.size 16 ]
-        [ text (Date.format "yyy-MM-dd" metadata.published) ]
+        [ text (Date.format "yyy-MM-dd" metadata.publishedAt) ]

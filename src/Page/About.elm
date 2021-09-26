@@ -1,6 +1,7 @@
 module Page.About exposing (Data, Model, Msg, page)
 
 import Article exposing (..)
+import Css exposing (static)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Date exposing (..)
@@ -11,10 +12,9 @@ import Markdown
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
-import Path
 import Shared
 import View exposing (View)
-import Css exposing (static)
+
 
 type alias Model =
     ()
@@ -45,21 +45,21 @@ data =
 head :
     StaticPayload Data RouteParams
     -> List Head.Tag
-head static =
+head _ =
     Seo.summary
         { canonicalUrlOverride = Nothing
-        , siteName = "elm-pages"
+        , siteName = ""
         , image =
-            { url = Pages.Url.external "TODO"
-            , alt = "elm-pages logo"
+            { url = Pages.Url.external "images/icon.jpeg"
+            , alt = "Bunlog logo"
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = "ぶんぶんについて"
         , locale = Nothing
-        , title = "TODO title" -- metadata.title -- TODO
+        , title = "About | Bunlog"
         }
-        |> Seo.website
+        |> Seo.profile { firstName = "Fumihito", lastName = "Morita", username = Just "adoring_onion" }
 
 
 type alias Data =
@@ -71,20 +71,16 @@ view :
     -> Shared.Model
     -> StaticPayload Data RouteParams
     -> View Msg
-view maybeUrl sharedModel static =
-    { title = "About"
+view _ _ static =
+    { title = "About | Bunlog"
     , body = [ aboutBody static.data ]
     }
 
 
-
-
-
-aboutBody  : String -> Element Msg
+aboutBody : String -> Element Msg
 aboutBody body =
     Element.paragraph
-        [
-         Element.width Element.fill
+        [ Element.width Element.fill
         , Element.paddingXY 100 40
         ]
         [ Element.html

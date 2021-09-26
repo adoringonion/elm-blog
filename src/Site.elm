@@ -14,7 +14,7 @@ type alias Data =
 config : SiteConfig Data
 config =
     { data = data
-    , canonicalUrl = "https://elm-pages.com"
+    , canonicalUrl = "https://adoringonion.com/"
     , manifest = manifest
     , head = head
     }
@@ -26,16 +26,16 @@ data =
 
 
 head : Data -> List Head.Tag
-head static =
+head _ =
     [ Head.sitemapLink "/sitemap.xml"
     ]
 
 
 manifest : Data -> Manifest.Config
-manifest static =
+manifest _ =
     Manifest.init
-        { name = "Site Name"
-        , description = "Description"
+        { name = "Bunlog"
+        , description = "ぶんぶんのブログです"
         , startUrl = Route.Index |> Route.toPath
         , icons = []
         }
