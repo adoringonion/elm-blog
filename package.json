@@ -1,14 +1,10 @@
 {
-  "name": "elm-pages-example",
-  "private": true,
-  "version": "1.0.0",
+  "name": "elm-pages-app",
   "scripts": {
     "start": "elm-pages dev",
     "build": "elm-pages build"
   },
-  "dependencies": {
-    "elm-pages": "^2.1.4",
-    "highlight.js": "^10.6.0",
-    "little-loader": "^0.2.0"
+  "devDependencies": {
+    "elm-pages": "^2.1.4"
   }
 }
