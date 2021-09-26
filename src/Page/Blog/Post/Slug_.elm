@@ -9,6 +9,7 @@ import Element.Background exposing (..)
 import Element.Font as Font
 import Head
 import Head.Seo as Seo
+import Html.Attributes exposing (class)
 import Markdown
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
@@ -102,6 +103,7 @@ viewPost entry =
         [ Element.width (Element.fill |> Element.maximum 1000)
         , Element.centerX
         , Element.paddingXY 0 50
+        , Element.spacing 20
         ]
         [ viewTitle entry.title
         , dateAndTags entry.publishedAt entry.tags
@@ -131,7 +133,7 @@ postBody body =
         [ Element.width Element.fill
         ]
         [ Element.html
-            (Markdown.toHtml [] body)
+            (Markdown.toHtml [ class "postBody" ] body)
         ]
 
 
@@ -150,7 +152,7 @@ viewTitle title =
 publishedDateView : Date -> Element msg
 publishedDateView date =
     Element.row
-        [ Font.size 20
+        [ Font.size 15
         ]
         [ text (Date.format "yyy-MM-dd" date) ]
 
@@ -159,6 +161,7 @@ viewTags : List Tag -> Element msg
 viewTags tags =
     Element.row
         [ Element.padding 3
+        , Element.spacing 8
         ]
         (List.map
             (\tag ->

@@ -110,7 +110,7 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view _ _ model static =
-    { title = "MyBlog"
+    { title = "Bunlog"
     , body = [ articleColumn static.data model ]
     }
 
