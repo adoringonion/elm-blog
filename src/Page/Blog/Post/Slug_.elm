@@ -1,7 +1,6 @@
 module Page.Blog.Post.Slug_ exposing (..)
 
 import Article exposing (..)
-import Css exposing (static)
 import DataSource
 import Date exposing (..)
 import Element exposing (..)
@@ -17,6 +16,7 @@ import Pages.Url
 import Shared exposing (Msg)
 import View exposing (View)
 import Path
+import Page.Index exposing (summary)
 
 
 type alias Model =
@@ -70,7 +70,7 @@ head static =
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = "TODO"
+        , description = summarize static.data
         , locale = Nothing
         , title = static.data.title ++ " | Bunlog"
         }

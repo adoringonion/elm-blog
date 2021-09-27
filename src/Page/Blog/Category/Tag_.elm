@@ -1,7 +1,6 @@
 module Page.Blog.Category.Tag_ exposing (..)
 
 import Article exposing (..)
-import Css exposing (static)
 import DataSource
 import Date exposing (..)
 import Element exposing (..)

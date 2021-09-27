@@ -1,10 +1,12 @@
-module Article exposing (Entry, Tag, allPosts, allTags, getPostById)
+module Article exposing (Entry, Tag, allPosts, allTags, getPostById, summarize)
 
 import DataSource
 import DataSource.Http
 import Date exposing (Date)
 import OptimizedDecoder as Decode
 import Pages.Secrets as Secrets
+import Regex exposing (Regex)
+import String.Extra exposing (ellipsis)
 
 
 type alias Entry =
@@ -36,6 +38,7 @@ allPosts =
         )
         (contentsDecoder entryDecoder)
 
+
 getPostById : String -> DataSource.DataSource Entry
 getPostById id =
     DataSource.Http.request
@@ -50,6 +53,7 @@ getPostById id =
             |> Secrets.with "API_KEY"
         )
         entryDecoder
+
 
 allTags : DataSource.DataSource (List Tag)
 allTags =
@@ -98,3 +102,18 @@ dateDecoder =
 tagDecoder : Decode.Decoder Tag
 tagDecoder =
     Decode.map2 Tag (Decode.field "id" Decode.string) (Decode.field "name" Decode.string)
+
+
+summarize : Entry -> String
+summarize entry =
+    entry.body
+        |> Regex.replace (regexFromString "#+ .+") (always "")
+        |> Regex.replace (regexFromString "\\[") (always "")
+        |> Regex.replace (regexFromString "\\]") (always "")
+        |> Regex.replace (regexFromString "(http.+)") (always "")
+        |> ellipsis 150
+
+
+regexFromString : String -> Regex
+regexFromString =
+    Regex.fromString >> Maybe.withDefault Regex.never

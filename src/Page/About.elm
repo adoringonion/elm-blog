@@ -1,7 +1,6 @@
 module Page.About exposing (Data, Model, Msg, page)
 
 import Article exposing (..)
-import Css exposing (static)
 import DataSource exposing (DataSource)
 import DataSource.File
 import Date exposing (..)
