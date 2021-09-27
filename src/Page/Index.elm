@@ -2,7 +2,6 @@ module Page.Index exposing (..)
 
 import Article exposing (..)
 import Browser.Navigation
-import Css exposing (static)
 import DataSource exposing (DataSource)
 import Date exposing (..)
 import Element exposing (..)
@@ -159,9 +158,10 @@ articleCard entry =
                         [ Element.Font.size 23
                         , Element.Font.semiBold
                         ]
-                        [ text entry.title]
+                        [ text entry.title ]
                     , publishedDateView entry
                     , viewTags entry.tags
+                    , summary entry
                     ]
                 ]
         }
@@ -175,11 +175,10 @@ viewTags tags =
         (List.map
             (\tag ->
                 el
-                    [ 
-                    Element.padding 7
+                    [ Element.padding 7
                     , Element.Font.center
                     ]
-                    (text ( "#" ++ tag.name))
+                    (text ("#" ++ tag.name))
             )
             (List.take 5 tags)
         )
@@ -190,3 +189,10 @@ publishedDateView metadata =
     Element.paragraph
         [ Element.Font.size 16 ]
         [ text (Date.format "yyy-MM-dd" metadata.publishedAt) ]
+
+
+summary : Entry -> Element msg
+summary entry =
+    Element.paragraph [
+        Element.Font.size 14
+    ] [ text <| Article.summarize entry ]
