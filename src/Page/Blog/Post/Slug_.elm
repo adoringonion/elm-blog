@@ -16,7 +16,6 @@ import Pages.Url
 import Shared exposing (Msg)
 import View exposing (View)
 import Path
-import Page.Index exposing (summary)
 
 
 type alias Model =
