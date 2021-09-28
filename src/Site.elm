@@ -5,7 +5,11 @@ import Head
 import Pages.Manifest as Manifest
 import Route
 import SiteConfig exposing (SiteConfig)
-
+import LanguageTag
+import LanguageTag.Language
+import MimeType
+import Path
+import Pages.Url
 
 type alias Data =
     ()
@@ -28,6 +32,10 @@ data =
 head : Data -> List Head.Tag
 head _ =
     [ Head.sitemapLink "/sitemap.xml"
+    , language
+    , Head.rssLink "/feed.xml"
+    , Head.icon [ ( 32, 32 ) ] MimeType.Jpeg ([ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath)
+    , Head.icon [ ( 16, 16 ) ] MimeType.Jpeg ([ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath)
     ]
 
 
@@ -39,3 +47,9 @@ manifest _ =
         , startUrl = Route.Index |> Route.toPath
         , icons = []
         }
+
+language : Head.Tag
+language =
+    LanguageTag.Language.ja
+        |> LanguageTag.build LanguageTag.emptySubtags
+        |> Head.rootLanguage
