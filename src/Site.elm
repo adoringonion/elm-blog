@@ -2,14 +2,15 @@ module Site exposing (config)
 
 import DataSource
 import Head
-import Pages.Manifest as Manifest
-import Route
-import SiteConfig exposing (SiteConfig)
 import LanguageTag
 import LanguageTag.Language
 import MimeType
-import Path
+import Pages.Manifest as Manifest
 import Pages.Url
+import Path
+import Route
+import SiteConfig exposing (SiteConfig)
+
 
 type alias Data =
     ()
@@ -47,6 +48,7 @@ manifest _ =
         , startUrl = Route.Index |> Route.toPath
         , icons = []
         }
+
 
 language : Head.Tag
 language =

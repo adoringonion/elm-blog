@@ -97,7 +97,7 @@ head static =
 
 
 type alias Data =
-    { entries : List Entry, tag : String }
+    { entries : List AricleMetadata, tag : String }
 
 
 view :
@@ -111,7 +111,7 @@ view _ _ static =
     }
 
 
-wrapper : List Entry -> String -> Element Msg
+wrapper : List AricleMetadata -> String -> Element Msg
 wrapper entries tag =
     Element.column
         [ Element.paddingXY 50 70
@@ -130,7 +130,7 @@ wrapper entries tag =
         ]
 
 
-articleColumn : List Entry -> Element Msg
+articleColumn : List AricleMetadata -> Element Msg
 articleColumn entries =
     Element.column
         [ centerX, Element.width (Element.fill |> Element.maximum 600), Element.spacing 20 ]

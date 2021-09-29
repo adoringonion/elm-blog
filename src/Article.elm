@@ -1,4 +1,4 @@
-module Article exposing (Entry, Tag, allPosts, allTags, getPostById, summarize)
+module Article exposing (AricleMetadata, Tag, allPosts, allTags, getPostBodyById, getMetadataById, summarize)
 
 import DataSource
 import DataSource.Http
@@ -9,10 +9,10 @@ import Regex exposing (Regex)
 import String.Extra exposing (ellipsis)
 
 
-type alias Entry =
+type alias AricleMetadata =
     { id : String
     , title : String
-    , body : String
+    , description : String
     , publishedAt : Date
     , revisedAt : Date
     , tags : List Tag
@@ -23,7 +23,7 @@ type alias Tag =
     { id : String, name : String }
 
 
-allPosts : DataSource.DataSource (List Entry)
+allPosts : DataSource.DataSource (List AricleMetadata)
 allPosts =
     DataSource.Http.request
         (Secrets.succeed
@@ -38,9 +38,8 @@ allPosts =
         )
         (contentsDecoder entryDecoder)
 
-
-getPostById : String -> DataSource.DataSource Entry
-getPostById id =
+getMetadataById : String -> DataSource.DataSource AricleMetadata
+getMetadataById id =
     DataSource.Http.request
         (Secrets.succeed
             (\apiKey ->
@@ -53,6 +52,21 @@ getPostById id =
             |> Secrets.with "API_KEY"
         )
         entryDecoder
+
+getPostBodyById : String -> DataSource.DataSource String
+getPostBodyById id =
+    DataSource.Http.request
+        (Secrets.succeed
+            (\apiKey ->
+                { url = "https://adoringonion.microcms.io/api/v1/blog/" ++ id
+                , method = "GET"
+                , headers = [ ( "X-API-KEY", apiKey ) ]
+                , body = DataSource.Http.emptyBody
+                }
+            )
+            |> Secrets.with "API_KEY"
+        )
+        (Decode.field "body" Decode.string)
 
 
 allTags : DataSource.DataSource (List Tag)
@@ -77,12 +91,12 @@ contentsDecoder decoder =
         Decode.list decoder
 
 
-entryDecoder : Decode.Decoder Entry
+entryDecoder : Decode.Decoder AricleMetadata
 entryDecoder =
-    Decode.map6 Entry
+    Decode.map6 AricleMetadata
         (Decode.field "id" Decode.string)
         (Decode.field "title" Decode.string)
-        (Decode.field "body" Decode.string)
+        bodyDecoder
         (Decode.field "publishedAt" dateDecoder)
         (Decode.field "revisedAt" dateDecoder)
         (Decode.field "tags" <| Decode.list tagDecoder)
@@ -98,15 +112,23 @@ dateDecoder =
                     |> Decode.fromResult
             )
 
+bodyDecoder : Decode.Decoder String
+bodyDecoder =
+    Decode.field "body" Decode.string
+        |> Decode.andThen
+            (\body ->
+                summarize body |> Decode.succeed
+            )
+
 
 tagDecoder : Decode.Decoder Tag
 tagDecoder =
     Decode.map2 Tag (Decode.field "id" Decode.string) (Decode.field "name" Decode.string)
 
 
-summarize : Entry -> String
-summarize entry =
-    entry.body
+summarize : String -> String
+summarize body =
+    body
         |> Regex.replace (regexFromString "#+ .+") (always "")
         |> Regex.replace (regexFromString "\\[") (always "")
         |> Regex.replace (regexFromString "\\]") (always "")

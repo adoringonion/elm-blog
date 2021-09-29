@@ -99,7 +99,7 @@ head _ =
 
 
 type alias Data =
-    List Entry
+    List AricleMetadata
 
 
 view :
@@ -114,7 +114,7 @@ view _ _ model static =
     }
 
 
-articleColumn : List Entry -> Model -> Element Msg
+articleColumn : List AricleMetadata -> Model -> Element Msg
 articleColumn entries model =
     Element.row
         [ Element.paddingXY 50 70
@@ -126,7 +126,7 @@ articleColumn entries model =
         ]
 
 
-morePostsButton : List Entry -> Model -> Element Msg
+morePostsButton : List AricleMetadata -> Model -> Element Msg
 morePostsButton entries model =
     if model >= List.length entries then
         Element.none
@@ -138,7 +138,7 @@ morePostsButton entries model =
             ]
 
 
-articleCard : Article.Entry -> Element msg
+articleCard : Article.AricleMetadata -> Element msg
 articleCard entry =
     Element.link
         [ Element.padding 10
@@ -191,8 +191,8 @@ publishedDateView metadata =
         [ text (Date.format "yyy-MM-dd" metadata.publishedAt) ]
 
 
-summary : Entry -> Element msg
-summary entry =
+summary : AricleMetadata -> Element msg
+summary article =
     Element.paragraph [
         Element.Font.size 14
-    ] [ text <| Article.summarize entry ]
+    ] [ text <| article.description ]

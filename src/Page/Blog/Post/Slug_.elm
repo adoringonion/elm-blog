@@ -9,13 +9,14 @@ import Element.Font as Font
 import Head
 import Head.Seo as Seo
 import Html.Attributes exposing (class)
+import LanguageTag.Country exposing (bo)
 import Markdown
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)
 import Pages.Url
+import Path
 import Shared exposing (Msg)
 import View exposing (View)
-import Path
 
 
 type alias Model =
@@ -53,7 +54,12 @@ routes =
 
 data : RouteParams -> DataSource.DataSource Data
 data route =
-    Article.getPostById route.slug
+    DataSource.map2
+        (\body metadata ->
+            { metadata = metadata, body = body }
+        )
+        (Article.getPostBodyById route.slug)
+        (Article.getMetadataById route.slug)
 
 
 head :
@@ -69,21 +75,23 @@ head static =
             , dimensions = Nothing
             , mimeType = Nothing
             }
-        , description = summarize static.data
+        , description = static.data.metadata.description
         , locale = Nothing
-        , title = static.data.title ++ " | Bunlog"
+        , title = static.data.metadata.title ++ " | Bunlog"
         }
         |> Seo.article
             { expirationTime = Nothing
-            , modifiedTime = Just (Date.format "yyy-MM-dd" static.data.revisedAt)
-            , publishedTime = Just (Date.format "yyy-MM-dd" static.data.publishedAt)
+            , modifiedTime = Just (Date.format "yyy-MM-dd" static.data.metadata.revisedAt)
+            , publishedTime = Just (Date.format "yyy-MM-dd" static.data.metadata.publishedAt)
             , section = Nothing
-            , tags = List.map (\tag -> tag.name) static.data.tags
+            , tags = List.map (\tag -> tag.name) static.data.metadata.tags
             }
 
 
 type alias Data =
-    Entry
+    { metadata : AricleMetadata
+    , body : String
+    }
 
 
 view :
@@ -92,26 +100,26 @@ view :
     -> StaticPayload Data RouteParams
     -> View Msg
 view _ _ static =
-    { title = static.data.title ++ " | MyBlog"
-    , body = [ viewPost static.data ]
+    { title = static.data.metadata.title ++ " | Bunlog"
+    , body = [ viewPost static.data.metadata static.data.body ]
     }
 
 
-viewPost : Entry -> Element Msg
-viewPost entry =
+viewPost : AricleMetadata -> String -> Element Msg
+viewPost metadata body =
     column
         [ Element.width (Element.fill |> Element.maximum 1000)
         , Element.centerX
         , Element.paddingXY 0 50
         , Element.spacing 20
         ]
-        [ viewTitle entry.title
-        , dateAndTags entry.publishedAt entry.tags
+        [ viewTitle metadata.title
+        , dateAndTags metadata.publishedAt metadata.tags
         , column
             [ Element.centerX
             , Element.paddingXY 30 20
             ]
-            [ postBody entry.body ]
+            [ postBody body ]
         ]
 
 
