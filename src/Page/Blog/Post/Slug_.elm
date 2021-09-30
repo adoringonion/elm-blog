@@ -9,7 +9,6 @@ import Element.Font as Font
 import Head
 import Head.Seo as Seo
 import Html.Attributes exposing (class)
-import LanguageTag.Country exposing (bo)
 import Markdown
 import Page exposing (Page, StaticPayload)
 import Pages.PageUrl exposing (PageUrl)

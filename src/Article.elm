@@ -28,7 +28,7 @@ allPosts =
     DataSource.Http.request
         (Secrets.succeed
             (\apiKey ->
-                { url = "https://adoringonion.microcms.io/api/v1/blog"
+                { url = "https://adoringonion.microcms.io/api/v1/blog?limit=1000"
                 , method = "GET"
                 , headers = [ ( "X-API-KEY", apiKey ) ]
                 , body = DataSource.Http.emptyBody
@@ -74,7 +74,7 @@ allTags =
     DataSource.Http.request
         (Secrets.succeed
             (\apiKey ->
-                { url = "https://adoringonion.microcms.io/api/v1/tags"
+                { url = "https://adoringonion.microcms.io/api/v1/tags?limit=1000"
                 , method = "GET"
                 , headers = [ ( "X-API-KEY", apiKey ) ]
                 , body = DataSource.Http.emptyBody
