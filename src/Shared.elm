@@ -65,7 +65,7 @@ init :
             , pageUrl : Maybe PageUrl
             }
     -> ( Model, Cmd Msg )
-init _ _ _  =
+init _ _ _ =
     ( { showMobileMenu = False }
     , Cmd.none
     )
@@ -76,10 +76,18 @@ update msg model =
     case msg of
         OnPageChange page ->
             let
+                segments =
+                    Path.toSegments page.path
+
                 lastSegment =
-                    Path.toSegments page.path |> List.Extra.last |> Maybe.withDefault ""
+                    segments |> List.Extra.last |> Maybe.withDefault ""
             in
-            ( model, Ports.loadDisqus lastSegment )
+            case List.take 2 segments |> Path.join |> Path.toAbsolute of
+                "blog/post" ->
+                    ( model, Ports.loadDisqus lastSegment )
+
+                _ ->
+                    ( model, Cmd.none )
 
         SharedMsg _ ->
             ( model, Cmd.none )
