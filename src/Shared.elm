@@ -8,9 +8,11 @@ import Element.Border
 import Element.Font as Font
 import Element.Region exposing (navigation)
 import Html exposing (Html)
+import List.Extra
 import Pages.Flags
 import Pages.PageUrl exposing (PageUrl)
 import Path exposing (Path)
+import Ports
 import Route exposing (Route)
 import SharedTemplate exposing (SharedTemplate)
 import View exposing (View)
@@ -63,7 +65,7 @@ init :
             , pageUrl : Maybe PageUrl
             }
     -> ( Model, Cmd Msg )
-init _ _ _ =
+init _ _ _  =
     ( { showMobileMenu = False }
     , Cmd.none
     )
@@ -72,8 +74,12 @@ init _ _ _ =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        OnPageChange _ ->
-            ( { model | showMobileMenu = False }, Cmd.none )
+        OnPageChange page ->
+            let
+                lastSegment =
+                    Path.toSegments page.path |> List.Extra.last |> Maybe.withDefault ""
+            in
+            ( model, Ports.loadDisqus lastSegment )
 
         SharedMsg _ ->
             ( model, Cmd.none )
