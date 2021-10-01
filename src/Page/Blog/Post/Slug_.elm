@@ -117,8 +117,9 @@ viewPost metadata body =
         , column
             [ Element.centerX
             , Element.paddingXY 30 20
+            , Element.spacing 30
             ]
-            [ postBody body ]
+            [ postBody body, viewDisqus ]
         ]
 
 
@@ -179,3 +180,8 @@ viewTags tags =
             )
             tags
         )
+
+
+viewDisqus : Element msg
+viewDisqus =
+    Element.el [ Element.htmlAttribute (Html.Attributes.id "disqus_thread"), Element.width Element.fill ] Element.none
