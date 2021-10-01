@@ -83,7 +83,7 @@ update msg model =
                     segments |> List.Extra.last |> Maybe.withDefault ""
             in
             case List.take 2 segments |> Path.join |> Path.toAbsolute of
-                "blog/post" ->
+                "/blog/post" ->
                     ( model, Ports.loadDisqus lastSegment )
 
                 _ ->

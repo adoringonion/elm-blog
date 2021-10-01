@@ -4,7 +4,7 @@ export default {
   load: async function (elmLoaded) {
     const app = await elmLoaded;
     googleAnalytics();
-    disqus();
+    disqus("");
 
     app.ports.loadDisqus.subscribe(function (message) {
       console.log('loadDisqus', message);
