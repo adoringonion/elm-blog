@@ -4,7 +4,6 @@ const parser = require('node-html-parser')
 
 glob.glob('dist/blog/post/*/index.html', (err, files) => {
     files.forEach(file => {
-        console.log(file);
         const html = fs.readFileSync(file, 'utf8');
         const root = parser.parse(html);
 
