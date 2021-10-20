@@ -1,20 +1,40 @@
-code {
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
+body {
+    font-family: 'Noto Sans JP', sans-serif;
 }
 
 .postBody > pre {
-    background-color: rgb(20, 27, 65);
-    color: #c5dfe2;
+    background-color: rgba(218, 218, 218, 0.342);
+    color: #333333;
     padding: 10px;
-    overflow: scroll;
-    overflow-y: hidden;
+    white-space: pre-wrap;
     font-size: medium;
     border-radius: 5px;
 }
 
 .postBody > h1, .postBody > h2, .postBody > h3 {
-    border-bottom: 3px solid #c5dfe2;
+    border-bottom: 3px solid rgb(190, 190, 190);
     padding-bottom: 5px;
     margin-top: 40px;
     margin-bottom: 40px;
+    padding: 10px;
+}
+
+.postBody > p {
+    margin: 42px 10px;
+    font-size: 1.4rem;
+    line-height: normal;
+}
+
+.postBody > blockquote {
+    background-color: ghostwhite;
+    padding: 10px;
+    border-radius: 0px 5px 5px 0px;
+    border-left: 5px solid grey;
+}
+
+.postBody > p > a {
+    text-decoration:none;
+    color: #4a79cf;
 }

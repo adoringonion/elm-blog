@@ -21,4 +21,3 @@ function googleAnalytics() {
   ga('create', 'UA-147049916-2', 'auto');
   ga('send', 'pageview');
 };
-

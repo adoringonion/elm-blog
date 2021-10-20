@@ -119,7 +119,7 @@ viewPost metadata body =
             , Element.paddingXY 30 20
             , Element.spacing 30
             ]
-            [ postBody body, viewUtterances ]
+            [ postBody body ]
         ]
 
 
@@ -182,6 +182,3 @@ viewTags tags =
         )
 
 
-viewUtterances : Element msg
-viewUtterances =
-    Element.el [ Element.htmlAttribute (Html.Attributes.id "utterances"), Element.width Element.fill ] Element.none
