@@ -30,8 +30,6 @@ jobs:
         run : npm install --save-dev elm-tooling && npx elm-tooling install
       - name: elm-pages build
         run: npm run build
-      - name: utterances
-        run: node ./tools/utterances-sed.js 
       
       - name: S3 Deploy
         uses: Reggionick/s3-deploy@v3.1.0
