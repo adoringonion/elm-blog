@@ -36,8 +36,8 @@ head _ =
     , Head.rssLink "/feed.xml"
     , Head.icon [ ( 32, 32 ) ] MimeType.Jpeg ([ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath)
     , Head.icon [ ( 16, 16 ) ] MimeType.Jpeg ([ "images", "icon.jpeg" ] |> Path.join |> Pages.Url.fromPath)
+    , Head.metaName  "viewport" (Head.raw "width=device-width, initial-scale=0.5")
     ]
-
 
 manifest : Data -> Manifest.Config
 manifest _ =
